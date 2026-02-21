@@ -30,15 +30,11 @@ Get a free API key at [Google AI Studio](https://aistudio.google.com/apikey). If
 - `public/js/script.js` — Theme toggle, certification modal, footer year
 - `public/js/chat.js` — Chat panel and Gemini API calls
 
-## Deploy to Netlify
+## Deploy to Vercel
 
-1. **Commit and push** the `public` folder and `netlify.toml` (use relative paths only).
-2. **Clear Netlify UI overrides** so the doubled path goes away:
-   - Netlify → **Site configuration** (or **Site settings**) → **Build & deploy** → **Continuous deployment** → **Build settings** → **Edit settings**.
-   - Set **Publish directory** to `public` (or leave **empty** so `netlify.toml` is used).
-   - **Do not** set Publish directory to an absolute path like `/opt/build/repo/public`.
-   - If you see **Functions directory**, clear it or set to `netlify/functions` only if you use functions.
-3. **Save** and trigger **Clear cache and deploy site**.
+1. **Commit and push** the repo (including `api/`, `public/`, and `vercel.json`).
+2. In [Vercel](https://vercel.com), import the project and deploy. Static files are served from `public/`; the chat API runs as a serverless function from `api/server.js`.
+3. In **Project → Settings → Environment Variables**, add `GEMINI_API_KEY` so the “Chat with Kyle” feature works.
 
 ## SEO (when you deploy)
 
@@ -47,7 +43,7 @@ For better search results when people search your name, replace the placeholder 
 - `<link rel="canonical" href="https://your-domain.com/" />`
 - Inside the `<script type="application/ld+json">` block: `"url": "https://your-domain.com/"`
 
-Use your real domain (e.g. `https://kylecalingasan.dev` or your Vercel/Netlify URL). For Open Graph images to work on social shares, use the full absolute URL for `og:image` and `twitter:image` (e.g. `https://your-domain.com/img/Kyle%20Pic%201.jpg`).
+Use your real domain (e.g. `https://kylematthewcalingasan.vercel.app` or your custom domain). For Open Graph images to work on social shares, use the full absolute URL for `og:image` and `twitter:image` (e.g. `https://your-domain.com/img/Kyle%20Pic%201.jpg`).
 
 ## Tech
 
