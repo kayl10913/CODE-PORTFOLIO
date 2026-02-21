@@ -1,0 +1,28 @@
+{
+  "name": "kyle-calingasan-portfolio",
+  "version": "1.0.0",
+  "description": "CV portfolio website - Kyle Matthew D. Calingasan",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "portfolio",
+    "cv",
+    "resume"
+  ],
+  "author": "Kyle Matthew D. Calingasan",
+  "license": "MIT",
+  "dependencies": {
+    "@google/genai": "^1.42.0",
+    "@google/generative-ai": "^0.24.1",
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
