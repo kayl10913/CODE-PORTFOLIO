@@ -1,4 +1,4 @@
-# Kyle Matthew D. Calingasan — Portfolio
+# Kyle Matthew Calingasan — Portfolio
 
 A CV-style portfolio website built with **Node.js** and **Express**, inspired by [bryllim.com](https://bryllim.com/).
 
