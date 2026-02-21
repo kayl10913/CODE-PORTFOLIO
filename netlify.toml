@@ -8,3 +8,10 @@
 
 [build.environment]
   NODE_VERSION = "18"
+
+# Chat API: rewrite /api/chat to the serverless function so the frontend gets JSON
+[[redirects]]
+  from = "/api/chat"
+  to = "/.netlify/functions/chat"
+  status = 200
+  force = true
