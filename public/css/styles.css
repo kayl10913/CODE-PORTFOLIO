@@ -530,6 +530,11 @@ main {
   text-decoration: underline;
 }
 
+.project-meta {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
 @media (max-width: 600px) {
   .project-grid {
     grid-template-columns: 1fr;
@@ -837,13 +842,13 @@ main {
 
 .social-links a,
 .get-in-touch a {
-  color: var(--accent);
+  color: inherit;
   text-decoration: none;
 }
 
 .social-links a:hover,
 .get-in-touch a:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .social-links li,
