@@ -1,42 +1,10 @@
-functionsDirectory = "/opt/build/repo/netlify/functions"
-functionsDirectoryOrigin = "config"
-redirectsOrigin = "config"
-plugins = []
-headers = []
+# Netlify build — use ONLY relative paths (no /opt/build/repo, no leading slash).
+# In Netlify UI: do not set "Publish directory" or "Functions directory" to an absolute path,
+# or clear them so this file is used.
 
 [build]
-publish = "/opt/build/repo/public"
-publishOrigin = "config"
-commandOrigin = "ui"
-command = "npm install"
-functions = "/opt/build/repo/netlify/functions"
+  command = "npm install"
+  publish = "public"
 
-  [build.environment]
-
-  [build.processing]
-
-    [build.processing.css]
-
-    [build.processing.html]
-
-    [build.processing.images]
-
-    [build.processing.js]
-
-  [build.services]
-
-[functions]
-
-  [functions."*"]
-
-[[redirects]]
-from = "/api/*"
-to = "/.netlify/functions/:splat"
-status = 200
-force = false
-
-  [redirects.query]
-
-  [redirects.conditions]
-
-  [redirects.headers]
+[build.environment]
+  NODE_VERSION = "18"

@@ -30,6 +30,16 @@ Get a free API key at [Google AI Studio](https://aistudio.google.com/apikey). If
 - `public/js/script.js` — Theme toggle, certification modal, footer year
 - `public/js/chat.js` — Chat panel and Gemini API calls
 
+## Deploy to Netlify
+
+1. **Commit and push** the `public` folder and `netlify.toml` (use relative paths only).
+2. **Clear Netlify UI overrides** so the doubled path goes away:
+   - Netlify → **Site configuration** (or **Site settings**) → **Build & deploy** → **Continuous deployment** → **Build settings** → **Edit settings**.
+   - Set **Publish directory** to `public` (or leave **empty** so `netlify.toml` is used).
+   - **Do not** set Publish directory to an absolute path like `/opt/build/repo/public`.
+   - If you see **Functions directory**, clear it or set to `netlify/functions` only if you use functions.
+3. **Save** and trigger **Clear cache and deploy site**.
+
 ## SEO (when you deploy)
 
 For better search results when people search your name, replace the placeholder URL in `public/index.html` with your live site URL:
