@@ -113,6 +113,10 @@
                 <i class="fa-brands fa-github" aria-hidden="true"></i>
                 GitHub
               </a>
+              <a href="https://www.linkedin.com/in/kyle-matthew-calingasan-059899328/" class="btn btn-secondary" target="_blank" rel="noopener">
+                <i class="fa-brands fa-linkedin" aria-hidden="true"></i>
+                LinkedIn
+              </a>
             </div>
           </div>
         </div>
@@ -242,28 +246,67 @@
       <div class="section-head">
         <h2 class="section-title">Recent Certifications</h2>
       </div>
-      <div class="cert-badges">
-        <button type="button" class="cert-badge-card" data-cert-id="aws" aria-label="View AWS Academy Cloud Foundations certification details">
-          <img src="/img/badges/aws-academy-graduate-cloud-foundations-training-bad.png" alt="AWS Academy Cloud Foundations" />
-          <span>AWS Academy Graduate — Cloud Foundations</span>
-        </button>
-        <button type="button" class="cert-badge-card" data-cert-id="redhat-ad183" aria-label="View Red Hat Application Development I certification details">
-          <img src="/img/badges/red-hat-application-development-i-programming-in-ja.1.png" alt="Red Hat Application Development I Java EE" />
-          <span>Red Hat Application Development I: Java EE (AD183)</span>
-        </button>
-        <button type="button" class="cert-badge-card" data-cert-id="redhat-do188" aria-label="View Red Hat OpenShift Development I certification details">
-          <img src="/img/badges/red-hat-openshift-development-i-introduction-to-con.2.png" alt="Red Hat OpenShift Development I Podman" />
-          <span>Red Hat OpenShift Development I: Containers with Podman (DO188)</span>
-        </button>
-      </div>
-      <ul class="cert-list cert-list-other">
-        <li class="cert-item">
-          <strong>Dean's Lister</strong>
-          <span>Batangas State University TNEU — Lipa Campus</span>
+      <ul class="cert-list">
+        <li class="cert-row">
+          <div class="cert-row-text">
+            <span class="cert-row-title">AWS Academy Graduate — Cloud Foundations</span>
+            <span class="cert-row-org">Amazon Web Services Training and Certification</span>
+          </div>
+          <button type="button" class="cert-view-btn" data-cert-id="aws">View badge</button>
         </li>
-        <li class="cert-item">
-          <strong>BITCON 2025 — TechSynergy</strong>
-          <span>Batangas Information Technology Conference 2025</span>
+        <li class="cert-row">
+          <div class="cert-row-text">
+            <span class="cert-row-title">Red Hat Application Development I: Java EE (AD183)</span>
+            <span class="cert-row-org">Red Hat</span>
+          </div>
+          <button type="button" class="cert-view-btn" data-cert-id="redhat-ad183">View badge</button>
+        </li>
+        <li class="cert-row">
+          <div class="cert-row-text">
+            <span class="cert-row-title">Red Hat OpenShift Development I: Containers with Podman (DO188)</span>
+            <span class="cert-row-org">Red Hat</span>
+          </div>
+          <button type="button" class="cert-view-btn" data-cert-id="redhat-do188">View badge</button>
+        </li>
+        <li class="cert-row">
+          <div class="cert-row-text">
+            <span class="cert-row-title">DATABIZ 2025 — Data, AI &amp; Analytics</span>
+            <span class="cert-row-org">Batangas Information Technology Society</span>
+          </div>
+          <button type="button" class="cert-view-btn" data-cert-id="databiz-2025">View certificate</button>
+        </li>
+        <li class="cert-row">
+          <div class="cert-row-text">
+            <span class="cert-row-title">BITCON 2025 — IoT Innovations</span>
+            <span class="cert-row-org">Batangas Information Technology Society</span>
+          </div>
+          <button type="button" class="cert-view-btn" data-cert-id="bitcon-2025">View certificate</button>
+        </li>
+        <li class="cert-row">
+          <div class="cert-row-text">
+            <span class="cert-row-title">Techno SDG Exposition 2024</span>
+            <span class="cert-row-org">JPCS &amp; Tech Innovators Society, BatStateU TNEU Lipa</span>
+          </div>
+          <button type="button" class="cert-view-btn" data-cert-id="techno-sdg-2024">View certificate</button>
+        </li>
+        <li class="cert-row">
+          <div class="cert-row-text">
+            <span class="cert-row-title">TechSynergy 2023</span>
+            <span class="cert-row-org">Junior Philippine Computer Society — Lipa Chapter, BatStateU The NEU Lipa</span>
+          </div>
+          <button type="button" class="cert-view-btn" data-cert-id="techsynergy-2023">View certificate</button>
+        </li>
+        <li class="cert-row">
+          <div class="cert-row-text">
+            <span class="cert-row-title">Dean's Lister</span>
+            <span class="cert-row-org">Batangas State University TNEU — Lipa Campus</span>
+          </div>
+        </li>
+        <li class="cert-row">
+          <div class="cert-row-text">
+            <span class="cert-row-title">BITCON 2025 — TechSynergy</span>
+            <span class="cert-row-org">Batangas Information Technology Conference 2025</span>
+          </div>
         </li>
       </ul>
     </section>
@@ -321,6 +364,15 @@
           <button type="button" class="cert-modal-close-link">Close</button>
           <a id="cert-modal-view-btn" href="#" target="_blank" rel="noopener" class="cert-modal-view-btn">View Badge <i class="fa-solid fa-external-link-alt"></i></a>
         </div>
+      </div>
+    </div>
+
+    <!-- Certificate full-size lightbox (for View Certificate) -->
+    <div id="cert-lightbox" class="cert-lightbox" aria-hidden="true" role="dialog" aria-label="Certificate full size">
+      <button type="button" class="cert-lightbox-close" aria-label="Close"><i class="fa-solid fa-times"></i></button>
+      <div class="cert-lightbox-backdrop"></div>
+      <div class="cert-lightbox-content">
+        <img id="cert-lightbox-img" src="" alt="" class="cert-lightbox-img" />
       </div>
     </div>
 
