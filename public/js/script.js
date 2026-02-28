@@ -258,4 +258,17 @@
       }
     });
   });
+
+  // Populate badge skills in cert rows
+  document.querySelectorAll('.cert-row-skills').forEach(function (el) {
+    var id = el.getAttribute('data-cert-id');
+    var data = certData[id];
+    if (!data || !data.skills || !data.skills.length) return;
+    data.skills.forEach(function (skill) {
+      var tag = document.createElement('span');
+      tag.className = 'skill-tag cert-skill-tag';
+      tag.textContent = skill;
+      el.appendChild(tag);
+    });
+  });
 })();

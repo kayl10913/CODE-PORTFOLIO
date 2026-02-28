@@ -77,7 +77,8 @@
       <div class="hero-inner">
         <div class="hero-left">
           <div class="hero-avatar" aria-hidden="true">
-            <img src="img/Kyle%20Pic%201.jpg" alt="Kyle Matthew Calingasan" />
+            <img class="hero-avatar-img hero-avatar-img-default" src="img/Kyle%20Pic%201.jpg" alt="Kyle Matthew Calingasan" />
+            <img class="hero-avatar-img hero-avatar-img-hover" src="img/Kyle%20Pic%202.png" alt="Kyle Matthew Calingasan portrait painting" />
             <span class="hero-avatar-fallback">KC</span>
           </div>
           <div class="hero-info">
@@ -143,27 +144,36 @@
           <div class="tech-category">
             <h3>Frontend</h3>
             <div class="tech-pills">
-              <span class="pill">JavaScript</span>
-              <span class="pill">React</span>
-              <span class="pill">HTML / CSS</span>
+              <span class="pill"><i class="fa-brands fa-js" aria-hidden="true"></i> JavaScript</span>
+              <span class="pill"><i class="fa-brands fa-react" aria-hidden="true"></i> React</span>
+              <span class="pill"><i class="fa-brands fa-html5" aria-hidden="true"></i> HTML / CSS</span>
+              <span class="pill"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Vite React</span>
             </div>
           </div>
           <div class="tech-category">
             <h3>Backend</h3>
             <div class="tech-pills">
-              <span class="pill">Java EE</span>
-              <span class="pill">RESTful API</span>
-              <span class="pill">Node.js</span>
+              <span class="pill"><i class="fa-brands fa-python" aria-hidden="true"></i> Python</span>
+              <span class="pill"><i class="fa-brands fa-java" aria-hidden="true"></i> Java EE</span>
+              <span class="pill"><i class="fa-solid fa-plug" aria-hidden="true"></i> RESTful API</span>
+              <span class="pill"><i class="fa-brands fa-node-js" aria-hidden="true"></i> Node.js</span>
+            </div>
+          </div>
+          <div class="tech-category">
+            <h3>Mobile</h3>
+            <div class="tech-pills">
+              <span class="pill"><i class="fa-brands fa-react" aria-hidden="true"></i> React Native</span>
+              <span class="pill"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Flutter</span>
             </div>
           </div>
           <div class="tech-category">
             <h3>DevOps & Cloud</h3>
             <div class="tech-pills">
-              <span class="pill">AWS</span>
-              <span class="pill">Docker</span>
-              <span class="pill">Kubernetes</span>
-              <span class="pill">Red Hat OpenShift</span>
-              <span class="pill">Podman</span>
+              <span class="pill"><i class="fa-brands fa-aws" aria-hidden="true"></i> AWS</span>
+              <span class="pill"><i class="fa-brands fa-docker" aria-hidden="true"></i> Docker</span>
+              <span class="pill"><i class="fa-solid fa-cubes" aria-hidden="true"></i> Kubernetes</span>
+              <span class="pill"><i class="fa-brands fa-redhat" aria-hidden="true"></i> Red Hat OpenShift</span>
+              <span class="pill"><i class="fa-solid fa-box" aria-hidden="true"></i> Podman</span>
             </div>
           </div>
         </div>
@@ -334,6 +344,7 @@
 
   <footer class="site-footer">
     <p>© <span id="year"></span> Kyle Matthew Calingasan. All rights reserved.</p>
+    <p class="footer-made-with">Made with love and passion</p>
   </footer>
 
   <button type="button" class="chat-float" id="chat-float-btn" aria-label="Open chat">

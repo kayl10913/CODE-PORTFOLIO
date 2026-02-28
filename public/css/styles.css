@@ -231,10 +231,33 @@ main {
   justify-content: center;
 }
 
-.hero-avatar img {
+.hero-avatar-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.hero-avatar {
+  position: relative;
+}
+
+.hero-avatar-img-hover {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.25s ease-in-out;
+}
+
+.hero-avatar-img-default {
+  transition: opacity 0.25s ease-in-out;
+}
+
+.hero-avatar:hover .hero-avatar-img-hover {
+  opacity: 1;
+}
+
+.hero-avatar:hover .hero-avatar-img-default {
+  opacity: 0;
 }
 
 .hero-avatar-fallback {
@@ -487,6 +510,11 @@ main {
   margin-bottom: 0;
 }
 
+.pill i {
+  margin-right: 0.35rem;
+  opacity: 0.9;
+}
+
 .tech-category {
   margin-bottom: 1.25rem;
 }
@@ -607,6 +635,22 @@ main {
   color: var(--text-muted);
   font-weight: 400;
   font-size: 0.9em;
+}
+
+.cert-row-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
+
+.cert-skill-tag {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  background: var(--pill-bg);
+  color: var(--text);
+  border-radius: 4px;
 }
 
 /* Light mode: white background, black text, rounded black border */
@@ -993,6 +1037,14 @@ main {
 
 .site-footer p {
   margin: 0;
+}
+
+.site-footer p + p {
+  margin-top: 0.35rem;
+}
+
+.footer-made-with {
+  font-size: 0.9em;
 }
 
 /* ----- Floating chat button ----- */
