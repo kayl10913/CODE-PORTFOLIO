@@ -471,6 +471,19 @@ main {
   color: var(--text-muted);
 }
 
+.experience-block .exp-content .exp-role {
+  order: 1;
+}
+
+.experience-block .exp-content .exp-year {
+  order: 2;
+}
+
+.experience-block .exp-content .exp-company {
+  order: 3;
+  flex-basis: 100%;
+}
+
 .exp-desc {
   width: 100%;
   margin: 0.25rem 0 0 1.25rem;
