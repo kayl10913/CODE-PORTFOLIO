@@ -271,4 +271,308 @@
       el.appendChild(tag);
     });
   });
+
+  // Project preview modal
+  var projectImgBase = '/img/projects/';
+
+  var projectData = {
+    'mood-studios': {
+      title: 'Mood Studios Web and Mobile Application',
+      tagline: 'Booking system for Mood Studios in Bacoor, Cavite',
+      description: 'A full-stack web and mobile application developed for a photography studio business to streamline booking, client management, and payment processing. The web application was built using React, while the mobile application was developed using Flutter to provide a seamless cross-platform experience. The backend was powered by Node.js, enabling efficient API handling and system integration. The system also integrates PayMongo for secure online payment transactions, allowing clients to conveniently pay for photography packages and reservations digitally.',
+      stackCategories: [
+        {
+          name: 'Frontend',
+          items: [
+            { label: 'JavaScript', icon: 'fa-brands fa-js' },
+            { label: 'React', icon: 'fa-brands fa-react' }
+          ]
+        },
+        {
+          name: 'Mobile',
+          items: [
+            { label: 'Flutter', icon: 'fa-solid fa-mobile-screen' },
+            { label: 'Dart', icon: 'fa-solid fa-code' }
+          ]
+        },
+        {
+          name: 'Backend',
+          items: [
+            { label: 'Node.js', icon: 'fa-brands fa-node-js' }
+          ]
+        },
+        {
+          name: 'Database & Integrations',
+          items: [
+            { label: 'MongoDB', icon: 'fa-solid fa-database' },
+            { label: 'PayMongo', icon: 'fa-solid fa-credit-card' }
+          ]
+        }
+      ],
+      images: ['moodstudios.png', 'moodstudios2.png', 'moodstudios3.png']
+    },
+    safebite: {
+      title: 'SafeBite: Smart Monitoring Platform for Food Spoilage',
+      tagline: 'IoT-based food spoilage monitoring with AI-driven analysis',
+      description: 'SafeBite is an IoT-based food spoilage monitoring system designed to help users detect and prevent food waste through smart monitoring technology. The system utilizes multiple sensors to gather environmental and food condition data, which are analyzed using AI-driven techniques to determine spoilage levels and generate real-time alerts. The platform combines IoT hardware, data analytics, and artificial intelligence to improve food safety, monitoring accuracy, and early spoilage detection for households and businesses.',
+      stackCategories: [
+        {
+          name: 'Frontend',
+          items: [
+            { label: 'PHP', icon: 'fa-brands fa-php' }
+          ]
+        },
+        {
+          name: 'Backend',
+          items: [
+            { label: 'JavaScript', icon: 'fa-brands fa-js' },
+            { label: 'Node.js', icon: 'fa-brands fa-node-js' }
+          ]
+        },
+        {
+          name: 'Database',
+          items: [
+            { label: 'MySQL', icon: 'fa-solid fa-database' }
+          ]
+        },
+        {
+          name: 'IoT & AI',
+          items: [
+            { label: 'IoT Sensors', icon: 'fa-solid fa-microchip' },
+            { label: 'AI-driven Analysis', icon: 'fa-solid fa-brain' }
+          ]
+        }
+      ],
+      images: ['safebite.png', 'safebite2.png', 'safebite3.png']
+    },
+    midwest: {
+      title: 'Midwest Web and Mobile Application',
+      tagline: 'Web admin dashboard with sales forecasting and analytics',
+      description: 'A modern web and mobile management platform developed for business operations, featuring an admin dashboard with advanced analytics and AI-powered sales forecasting. The system provides real-time monitoring of business performance, sales trends, and operational insights through interactive dashboards and data visualization tools. Artificial intelligence integration enhances decision-making by predicting future sales patterns and generating analytical reports to support strategic business planning.',
+      stackCategories: [
+        {
+          name: 'Frontend',
+          items: [
+            { label: 'JavaScript', icon: 'fa-brands fa-js' },
+            { label: 'React', icon: 'fa-brands fa-react' }
+          ]
+        },
+        {
+          name: 'Mobile',
+          items: [
+            { label: 'Flutter', icon: 'fa-solid fa-mobile-screen' },
+            { label: 'Dart', icon: 'fa-solid fa-code' }
+          ]
+        },
+        {
+          name: 'Backend',
+          items: [
+            { label: 'Node.js', icon: 'fa-brands fa-node-js' }
+          ]
+        },
+        {
+          name: 'Database',
+          items: [
+            { label: 'MongoDB', icon: 'fa-solid fa-database' }
+          ]
+        }
+      ],
+      images: ['midwest.png', 'midwest2.png', 'midwest3.png']
+    },
+    'unit-testing': {
+      title: 'Unit Testing Generator with AI + Code Vulnerability Checker',
+      tagline: 'AI-powered unit test generation and code vulnerability scanning',
+      description: 'An AI-powered software development tool designed to automate unit test generation and detect potential security vulnerabilities in source code. The system analyzes uploaded or existing codebases to generate accurate unit test cases, helping developers improve software reliability and testing efficiency. It also performs vulnerability scanning to identify insecure coding practices, possible exploits, and security risks, assisting developers in maintaining secure and high-quality applications throughout the development lifecycle.',
+      stackCategories: [
+        {
+          name: 'Frontend',
+          items: [
+            { label: 'JavaScript', icon: 'fa-brands fa-js' },
+            { label: 'Vite React', icon: 'fa-solid fa-bolt' }
+          ]
+        },
+        {
+          name: 'Backend',
+          items: [
+            { label: 'Python', icon: 'fa-brands fa-python' }
+          ]
+        },
+        {
+          name: 'AI & Security',
+          items: [
+            { label: 'AI-powered Unit Test Generation', icon: 'fa-solid fa-vial' },
+            { label: 'Code Vulnerability Scanning', icon: 'fa-solid fa-shield-halved' }
+          ]
+        }
+      ],
+      images: []
+    }
+  };
+
+  var projectModal = document.getElementById('project-modal');
+  var projectModalBackdrop = projectModal && projectModal.querySelector('.project-modal-backdrop');
+  var projectModalCloseBtn = projectModal && projectModal.querySelector('.project-modal-close');
+  var projectModalCloseLink = projectModal && projectModal.querySelector('.project-modal-close-link');
+  var projectModalTitle = document.getElementById('project-modal-title');
+  var projectModalTagline = document.getElementById('project-modal-tagline');
+  var projectModalDesc = document.getElementById('project-modal-desc');
+  var projectModalTechStack = document.getElementById('project-modal-tech-stack');
+  var projectModalGalleryWrap = document.getElementById('project-modal-gallery-wrap');
+  var projectModalImg = document.getElementById('project-modal-img');
+  var projectGalleryPrev = projectModal && projectModal.querySelector('.project-gallery-prev');
+  var projectGalleryNext = projectModal && projectModal.querySelector('.project-gallery-next');
+  var projectGalleryDots = document.getElementById('project-gallery-dots');
+  var projectGalleryCurrent = document.getElementById('project-gallery-current');
+  var projectGalleryTotal = document.getElementById('project-gallery-total');
+  var currentProjectImages = [];
+  var currentProjectIndex = 0;
+
+  function projectImageSrc(filename) {
+    return projectImgBase + filename;
+  }
+
+  function updateProjectGallery() {
+    if (!currentProjectImages.length || !projectModalImg) return;
+    var src = currentProjectImages[currentProjectIndex];
+    projectModalImg.src = src;
+    projectModalImg.alt = (projectModalTitle && projectModalTitle.textContent) || 'Project screenshot';
+    if (projectGalleryCurrent) projectGalleryCurrent.textContent = String(currentProjectIndex + 1);
+    if (projectGalleryTotal) projectGalleryTotal.textContent = String(currentProjectImages.length);
+    if (projectGalleryPrev) projectGalleryPrev.disabled = currentProjectIndex === 0;
+    if (projectGalleryNext) projectGalleryNext.disabled = currentProjectIndex === currentProjectImages.length - 1;
+    if (projectGalleryDots) {
+      projectGalleryDots.querySelectorAll('.project-gallery-dot').forEach(function (dot, i) {
+        dot.classList.toggle('is-active', i === currentProjectIndex);
+        dot.setAttribute('aria-selected', i === currentProjectIndex ? 'true' : 'false');
+      });
+    }
+  }
+
+  function showProjectSlide(index) {
+    if (!currentProjectImages.length) return;
+    currentProjectIndex = Math.max(0, Math.min(index, currentProjectImages.length - 1));
+    updateProjectGallery();
+  }
+
+  function renderProjectTechStack(container, categories) {
+    if (!container) return;
+    container.innerHTML = '';
+    (categories || []).forEach(function (category) {
+      if (!category.items || !category.items.length) return;
+
+      var categoryEl = document.createElement('div');
+      categoryEl.className = 'tech-category';
+
+      var heading = document.createElement('h3');
+      heading.textContent = category.name;
+      categoryEl.appendChild(heading);
+
+      var pills = document.createElement('div');
+      pills.className = 'tech-pills';
+
+      category.items.forEach(function (item) {
+        var pill = document.createElement('span');
+        pill.className = 'pill';
+
+        if (item.icon) {
+          var icon = document.createElement('i');
+          icon.className = item.icon;
+          icon.setAttribute('aria-hidden', 'true');
+          pill.appendChild(icon);
+          pill.appendChild(document.createTextNode(' ' + item.label));
+        } else {
+          pill.textContent = item.label;
+        }
+
+        pills.appendChild(pill);
+      });
+
+      categoryEl.appendChild(pills);
+      container.appendChild(categoryEl);
+    });
+  }
+
+  function openProjectModal(id) {
+    var data = projectData[id];
+    if (!projectModal || !data) return;
+
+    currentProjectImages = (data.images || []).map(projectImageSrc);
+    currentProjectIndex = 0;
+
+    if (projectModalTitle) projectModalTitle.textContent = data.title;
+    if (projectModalTagline) projectModalTagline.textContent = data.tagline || '';
+    if (projectModalDesc) projectModalDesc.textContent = data.description || '';
+
+    renderProjectTechStack(projectModalTechStack, data.stackCategories);
+
+    if (projectModalGalleryWrap) {
+      projectModalGalleryWrap.classList.toggle('is-hidden', !currentProjectImages.length);
+    }
+
+    if (projectGalleryDots) {
+      projectGalleryDots.innerHTML = '';
+      currentProjectImages.forEach(function (_, i) {
+        var dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'project-gallery-dot' + (i === 0 ? ' is-active' : '');
+        dot.setAttribute('role', 'tab');
+        dot.setAttribute('aria-label', 'Screenshot ' + (i + 1));
+        dot.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+        dot.addEventListener('click', function () {
+          showProjectSlide(i);
+        });
+        projectGalleryDots.appendChild(dot);
+      });
+    }
+
+    if (currentProjectImages.length) {
+      updateProjectGallery();
+    } else if (projectModalImg) {
+      projectModalImg.removeAttribute('src');
+    }
+
+    projectModal.classList.add('is-open');
+    projectModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeProjectModal() {
+    if (!projectModal) return;
+    projectModal.classList.remove('is-open');
+    projectModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if (projectModalImg) projectModalImg.removeAttribute('src');
+  }
+
+  if (projectModal) {
+    if (projectModalBackdrop) projectModalBackdrop.addEventListener('click', closeProjectModal);
+    if (projectModalCloseBtn) projectModalCloseBtn.addEventListener('click', closeProjectModal);
+    if (projectModalCloseLink) projectModalCloseLink.addEventListener('click', closeProjectModal);
+    projectModal.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeProjectModal();
+      if (!projectModal.classList.contains('is-open')) return;
+      if (e.key === 'ArrowLeft') showProjectSlide(currentProjectIndex - 1);
+      if (e.key === 'ArrowRight') showProjectSlide(currentProjectIndex + 1);
+    });
+  }
+
+  if (projectGalleryPrev) {
+    projectGalleryPrev.addEventListener('click', function () {
+      showProjectSlide(currentProjectIndex - 1);
+    });
+  }
+
+  if (projectGalleryNext) {
+    projectGalleryNext.addEventListener('click', function () {
+      showProjectSlide(currentProjectIndex + 1);
+    });
+  }
+
+  document.querySelectorAll('.project-view-btn').forEach(function (btn) {
+    var id = btn.getAttribute('data-project-id');
+    if (!id || !projectData[id]) return;
+    btn.addEventListener('click', function () {
+      openProjectModal(id);
+    });
+  });
 })();

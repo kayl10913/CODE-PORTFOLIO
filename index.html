@@ -225,19 +225,36 @@
       </div>
       <div class="project-grid">
         <article class="project-card">
-          <h3 class="project-title">SafeBite: Smart Monitoring Platform for Food Spoilage</h3>
-          <p class="project-tagline">IoT-based food spoilage monitoring with AI-driven analysis</p>
-          <a href="#" class="project-link">Lipa City, Philippines · 2025</a>
+          <div class="project-card-content">
+            <h3 class="project-title">Mood Studios Web and Mobile Application</h3>
+            <p class="project-tagline">Booking system for Mood Studios in Bacoor, Cavite</p>
+            <span class="project-meta">Bacoor, Cavite, Philippines · 2026</span>
+          </div>
+          <button type="button" class="cert-view-btn project-view-btn" data-project-id="mood-studios">View project</button>
         </article>
         <article class="project-card">
-          <h3 class="project-title">Midwest Web and Mobile Application</h3>
-          <p class="project-tagline">Web admin dashboard with sales forecasting and analytics</p>
-          <a href="#" class="project-link">Lipa City, Philippines · 2025</a>
+          <div class="project-card-content">
+            <h3 class="project-title">SafeBite: Smart Monitoring Platform for Food Spoilage</h3>
+            <p class="project-tagline">IoT-based food spoilage monitoring with AI-driven analysis</p>
+            <span class="project-meta">Lipa City, Philippines · 2025</span>
+          </div>
+          <button type="button" class="cert-view-btn project-view-btn" data-project-id="safebite">View project</button>
         </article>
         <article class="project-card">
-          <h3 class="project-title">Unit Testing Generator with AI + Code Vulnerability Checker</h3>
-          <p class="project-tagline">AI-powered unit test generation and code vulnerability scanning</p>
-          <a href="#" class="project-link">Batangas City, Philippines · 2025</a>
+          <div class="project-card-content">
+            <h3 class="project-title">Midwest Web and Mobile Application</h3>
+            <p class="project-tagline">Web admin dashboard with sales forecasting and analytics</p>
+            <span class="project-meta">Lipa City, Philippines · 2025</span>
+          </div>
+          <button type="button" class="cert-view-btn project-view-btn" data-project-id="midwest">View project</button>
+        </article>
+        <article class="project-card">
+          <div class="project-card-content">
+            <h3 class="project-title">Unit Testing Generator with AI + Code Vulnerability Checker</h3>
+            <p class="project-tagline">AI-powered unit test generation and code vulnerability scanning</p>
+            <span class="project-meta">Batangas City, Philippines · 2025</span>
+          </div>
+          <button type="button" class="cert-view-btn project-view-btn" data-project-id="unit-testing">View project</button>
         </article>
       </div>
     </section>
@@ -325,6 +342,45 @@
         <div class="cert-modal-footer">
           <button type="button" class="cert-modal-close-link">Close</button>
           <a id="cert-modal-view-btn" href="#" target="_blank" rel="noopener" class="cert-modal-view-btn">View Badge <i class="fa-solid fa-external-link-alt"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project preview modal -->
+    <div id="project-modal" class="project-modal" role="dialog" aria-modal="true" aria-labelledby="project-modal-title" aria-hidden="true">
+      <div class="project-modal-backdrop" aria-hidden="true"></div>
+      <div class="project-modal-box">
+        <div class="project-modal-header">
+          <h2 id="project-modal-title" class="project-modal-title">Project Preview</h2>
+          <button type="button" class="project-modal-close" aria-label="Close">
+            <i class="fa-solid fa-times"></i>
+          </button>
+        </div>
+        <div class="project-modal-body">
+          <div id="project-modal-gallery-wrap" class="project-modal-gallery-wrap">
+            <div class="project-gallery">
+              <button type="button" class="project-gallery-nav project-gallery-prev" aria-label="Previous screenshot">
+                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+              </button>
+              <div class="project-gallery-frame">
+                <img id="project-modal-img" class="project-modal-img" src="" alt="" />
+              </div>
+              <button type="button" class="project-gallery-nav project-gallery-next" aria-label="Next screenshot">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div id="project-gallery-dots" class="project-gallery-dots" role="tablist" aria-label="Project screenshots"></div>
+            <p class="project-gallery-counter"><span id="project-gallery-current">1</span> / <span id="project-gallery-total">1</span></p>
+          </div>
+          <p id="project-modal-tagline" class="project-modal-tagline"></p>
+          <p id="project-modal-desc" class="project-modal-desc"></p>
+          <div class="project-modal-tech-block">
+            <h3 class="project-modal-stack-title">Tech Stack</h3>
+            <div id="project-modal-tech-stack" class="project-modal-tech-stack"></div>
+          </div>
+        </div>
+        <div class="project-modal-footer">
+          <button type="button" class="project-modal-close-link">Close</button>
         </div>
       </div>
     </div>
