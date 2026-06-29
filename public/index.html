@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" id="top">
+<html lang="en" id="top" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -75,49 +75,125 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
-  <button class="theme-toggle theme-toggle-float" aria-label="Toggle dark mode" type="button">
-    <i class="fa-solid fa-sun" aria-hidden="true"></i>
-    <i class="fa-solid fa-moon" aria-hidden="true"></i>
-  </button>
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Main">
+      <a href="#top" class="nav-logo"><span class="nav-logo-prompt">~/</span>KC</a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#tech-stack">Tech Stack</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#certifications">Certs</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" aria-label="Switch to light mode" type="button">
+          <i class="fa-solid fa-sun" aria-hidden="true"></i>
+          <i class="fa-solid fa-moon" aria-hidden="true"></i>
+        </button>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" type="button">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
 
   <main>
-    <!-- Hero: two columns - profile + info | badge -->
     <section id="hero" class="hero" aria-label="Introduction">
       <div class="hero-inner">
-        <div class="hero-left">
-          <div class="hero-avatar" aria-hidden="true">
-            <img class="hero-avatar-img hero-avatar-img-default" src="/img/Kyle%20Pic%201.jpg" alt="Kyle Matthew Calingasan" />
-            <img class="hero-avatar-img hero-avatar-img-hover" src="/img/Kyle%20Pic%202.png" alt="Kyle Matthew Calingasan portrait painting" />
-            <span class="hero-avatar-fallback">KC</span>
+        <div class="hero-profile">
+          <div class="hero-profile-main">
+            <div class="hero-avatar" aria-hidden="true">
+              <img class="hero-avatar-img hero-avatar-img-default" src="/img/Kyle%20Pic%201.jpg" alt="Kyle Matthew Calingasan" />
+              <img class="hero-avatar-img hero-avatar-img-hover" src="/img/Kyle%20Pic%202.png" alt="Kyle Matthew Calingasan portrait painting" />
+              <span class="hero-avatar-fallback">KC</span>
+            </div>
+            <div class="hero-info">
+              <span class="status-chip"><span class="status-dot"></span> Open to opportunities</span>
+              <h1 class="hero-name">
+                Kyle Matthew Calingasan
+                <span class="hero-verified" aria-label="Verified"><i class="fa-solid fa-circle-check"></i></span>
+              </h1>
+              <p class="hero-headline">I build backends that scale — APIs, cloud infra, and IoT systems.</p>
+              <p class="hero-location">
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                Taguig, Philippines
+              </p>
+              <p class="hero-tagline">Information Technology Specialist · Backend Developer · IoT & AI Enthusiast</p>
+              <div class="hero-cta">
+                <a href="mailto:calingasankylematthew@gmail.com?subject=Portfolio%20Inquiry%20from%20Kyle%27s%20Portfolio" class="btn btn-primary mailto-link" data-email="calingasankylematthew@gmail.com">
+                  <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                  Send Email
+                </a>
+                <a href="https://github.com/kayl10913" class="btn btn-secondary" target="_blank" rel="noopener">
+                  <i class="fa-brands fa-github" aria-hidden="true"></i>
+                  GitHub
+                </a>
+                <a href="https://www.linkedin.com/in/kyle-matthew-calingasan-059899328/" class="btn btn-secondary" target="_blank" rel="noopener">
+                  <i class="fa-brands fa-linkedin" aria-hidden="true"></i>
+                  LinkedIn
+                </a>
+              </div>
+            </div>
           </div>
-          <div class="hero-info">
-            <h1 class="hero-name">
-              Kyle Matthew Calingasan
-              <span class="hero-verified" aria-label="Verified"><i class="fa-solid fa-circle-check"></i></span>
-            </h1>
-            <p class="hero-location">
-              <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-              Taguig, Philippines
-            </p>
-            <p class="hero-tagline">Information Technology Specialist \ Backend Developer \ IoT & AI Enthusiast</p>
-            <div class="hero-cta">
-              <a href="mailto:calingasankylematthew@gmail.com" class="btn btn-primary">
-                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-                Send Email
-              </a>
-              <a href="https://github.com/kayl10913" class="btn btn-secondary" target="_blank" rel="noopener">
-                <i class="fa-brands fa-github" aria-hidden="true"></i>
-                GitHub
-              </a>
-              <a href="https://www.linkedin.com/in/kyle-matthew-calingasan-059899328/" class="btn btn-secondary" target="_blank" rel="noopener">
-                <i class="fa-brands fa-linkedin" aria-hidden="true"></i>
-                LinkedIn
-              </a>
+          <div class="hero-metrics" aria-label="Quick stats">
+            <div class="metric-card">
+              <span class="metric-value">4</span>
+              <span class="metric-label">Projects</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-value">3</span>
+              <span class="metric-label">Cloud certs</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-value">2</span>
+              <span class="metric-label">Internships</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-value">AWS</span>
+              <span class="metric-label">Cloud stack</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-terminal-wrap" id="hero-terminal-wrap">
+          <div class="terminal-window" id="hero-terminal-window" data-state="normal">
+            <div class="terminal-titlebar hero-terminal-titlebar">
+              <div class="hero-terminal-dots" aria-label="Window controls">
+                <button type="button" class="terminal-dot terminal-dot-red" id="hero-terminal-close" aria-label="Close terminal"></button>
+                <button type="button" class="terminal-dot terminal-dot-yellow" id="hero-terminal-minimize" aria-label="Minimize terminal"></button>
+                <button type="button" class="terminal-dot terminal-dot-green" id="hero-terminal-maximize" aria-label="Maximize terminal"></button>
+              </div>
+              <span class="terminal-title" id="hero-terminal-title">kyle@portfolio — bash</span>
+            </div>
+            <div class="terminal-body hero-terminal-body">
+              <div class="hero-terminal-scroll" id="hero-terminal-scroll">
+                <div class="hero-terminal-boot" id="hero-terminal-boot">
+                  <p class="terminal-line"><span class="terminal-prompt">$</span> curl -s api.kyle.dev/profile</p>
+                  <pre class="terminal-output" id="terminal-output" aria-live="polite"><code></code></pre>
+                </div>
+                <div class="hero-terminal-log" id="hero-terminal-log" aria-live="polite"></div>
+              </div>
+              <div class="hero-terminal-suggestions" id="hero-terminal-suggestions" hidden>
+                <span class="terminal-suggest-label">Try:</span>
+                <button type="button" class="terminal-cmd-suggest" data-cmd="help">help</button>
+                <button type="button" class="terminal-cmd-suggest" data-cmd="projects">projects</button>
+                <button type="button" class="terminal-cmd-suggest" data-cmd="certs">certs</button>
+                <button type="button" class="terminal-cmd-suggest" data-cmd="contact">contact</button>
+                <button type="button" class="terminal-cmd-suggest" data-cmd="assistant">assistant</button>
+              </div>
+              <form class="hero-terminal-form" id="hero-terminal-form">
+                <label class="hero-terminal-input-line" for="hero-terminal-input">
+                  <span class="terminal-prompt">$</span>
+                  <input type="text" id="hero-terminal-input" class="hero-terminal-input" placeholder="type a command..." autocomplete="off" spellcheck="false" aria-label="Terminal command" disabled />
+                </label>
+              </form>
             </div>
           </div>
         </div>
@@ -125,10 +201,10 @@
     </section>
 
     <!-- Two columns: About | Experience -->
-    <section class="two-col" aria-label="About and Experience">
+    <section class="two-col reveal" aria-label="About and Experience">
       <div class="two-col-inner">
         <div id="about" class="block about-block">
-          <h2 class="section-title">About</h2>
+          <h2 class="section-title"><span class="section-prefix">//</span> About</h2>
           <div class="about-content">
             <p>I'm an Information Technology Specialist and a graduate of Batangas State University TNEU — Lipa Campus with a Bachelor of Science in Information Technology major in Networking Technology.</p>
             <p>I have experience creating and sustaining scalable web application backend systems with a focus on performance, security, and reliability. I've modeled and developed RESTful APIs, processed server-side logic, and maintained database designs. I work closely with front-end developers and product teams to turn requirements into effective technical solutions.</p>
@@ -136,7 +212,7 @@
           </div>
         </div>
         <div id="experience" class="block experience-block">
-          <h2 class="section-title">Experience</h2>
+          <h2 class="section-title"><span class="section-prefix">//</span> Experience</h2>
           <ul class="exp-list">
             <li class="exp-item">
               <span class="exp-icon" aria-hidden="true"><i class="fa-solid fa-square"></i></span>
@@ -162,11 +238,11 @@
     </section>
 
     <!-- Two columns: Tech Stack (pills) | Education -->
-    <section class="two-col" aria-label="Tech Stack and Education">
+    <section class="two-col reveal" aria-label="Tech Stack and Education">
       <div class="two-col-inner">
         <div id="tech-stack" class="block tech-block">
           <div class="section-head">
-            <h2 class="section-title">Tech Stack</h2>
+            <h2 class="section-title"><span class="section-prefix">//</span> Tech Stack</h2>
           </div>
           <div class="tech-category">
             <h3>Frontend</h3>
@@ -181,6 +257,7 @@
             <h3>Backend</h3>
             <div class="tech-pills">
               <span class="pill"><i class="fa-brands fa-python" aria-hidden="true"></i> Python</span>
+              <span class="pill"><i class="fa-brands fa-php" aria-hidden="true"></i> PHP</span>
               <span class="pill"><i class="fa-brands fa-java" aria-hidden="true"></i> Java EE</span>
               <span class="pill"><i class="fa-solid fa-plug" aria-hidden="true"></i> RESTful API</span>
               <span class="pill"><i class="fa-brands fa-node-js" aria-hidden="true"></i> Node.js</span>
@@ -205,7 +282,7 @@
           </div>
         </div>
         <div id="education" class="block education-block">
-          <h2 class="section-title">Education</h2>
+          <h2 class="section-title"><span class="section-prefix">//</span> Education</h2>
           <ul class="exp-list">
             <li class="exp-item">
               <span class="exp-icon" aria-hidden="true"><i class="fa-solid fa-square"></i></span>
@@ -237,12 +314,15 @@
     </section>
 
     <!-- Recent Projects -->
-    <section id="projects" class="section projects-section">
+    <section id="projects" class="section projects-section reveal">
       <div class="section-head">
-        <h2 class="section-title">Recent Projects</h2>
+        <h2 class="section-title"><span class="section-prefix">//</span> Recent Projects</h2>
       </div>
       <div class="project-grid">
         <article class="project-card">
+          <button type="button" class="project-card-thumb project-view-btn" data-project-id="mood-studios" aria-label="View Mood Studios project">
+            <img src="/img/projects/moodstudios.png" alt="Mood Studios application screenshot" loading="lazy" />
+          </button>
           <div class="project-card-content">
             <h3 class="project-title">Mood Studios Web and Mobile Application</h3>
             <p class="project-tagline">Booking system for Mood Studios in Bacoor, Cavite</p>
@@ -251,6 +331,9 @@
           <button type="button" class="cert-view-btn project-view-btn" data-project-id="mood-studios">View project</button>
         </article>
         <article class="project-card">
+          <button type="button" class="project-card-thumb project-view-btn" data-project-id="safebite" aria-label="View SafeBite project">
+            <img src="/img/projects/safebite.png" alt="SafeBite platform screenshot" loading="lazy" />
+          </button>
           <div class="project-card-content">
             <h3 class="project-title">SafeBite: Smart Monitoring Platform for Food Spoilage</h3>
             <p class="project-tagline">IoT-based food spoilage monitoring with AI-driven analysis</p>
@@ -259,6 +342,9 @@
           <button type="button" class="cert-view-btn project-view-btn" data-project-id="safebite">View project</button>
         </article>
         <article class="project-card">
+          <button type="button" class="project-card-thumb project-view-btn" data-project-id="midwest" aria-label="View Midwest project">
+            <img src="/img/projects/midwest.png" alt="Midwest dashboard screenshot" loading="lazy" />
+          </button>
           <div class="project-card-content">
             <h3 class="project-title">Midwest Web and Mobile Application</h3>
             <p class="project-tagline">Web admin dashboard with sales forecasting and analytics</p>
@@ -267,6 +353,9 @@
           <button type="button" class="cert-view-btn project-view-btn" data-project-id="midwest">View project</button>
         </article>
         <article class="project-card">
+          <button type="button" class="project-card-thumb project-view-btn" data-project-id="unit-testing" aria-label="View Unit Testing Generator project">
+            <span class="project-thumb-placeholder" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></span>
+          </button>
           <div class="project-card-content">
             <h3 class="project-title">Unit Testing Generator with AI + Code Vulnerability Checker</h3>
             <p class="project-tagline">AI-powered unit test generation and code vulnerability scanning</p>
@@ -278,9 +367,9 @@
     </section>
 
     <!-- Recent Certifications -->
-    <section id="certifications" class="section certs-section">
+    <section id="certifications" class="section certs-section reveal">
       <div class="section-head">
-        <h2 class="section-title">Recent Certifications</h2>
+        <h2 class="section-title"><span class="section-prefix">//</span> Recent Certifications</h2>
       </div>
       <ul class="cert-list">
         <li class="cert-row">
@@ -455,19 +544,19 @@
     </div>
 
     <!-- Get in Touch + Social -->
-    <section id="contact" class="section contact-section">
+    <section id="contact" class="section contact-section reveal">
       <div class="contact-grid">
         <div class="contact-block">
-          <h2 class="section-title">Social Links</h2>
+          <h2 class="section-title"><span class="section-prefix">//</span> Social Links</h2>
           <ul class="social-links">
             <li><a href="https://github.com/kayl10913" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> GitHub</a></li>
             <li><a href="https://www.linkedin.com/in/kyle-matthew-calingasan-059899328/" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin"></i> LinkedIn</a></li>
           </ul>
         </div>
         <div class="contact-block">
-          <h2 class="section-title">Get in Touch</h2>
+          <h2 class="section-title"><span class="section-prefix">//</span> Get in Touch</h2>
           <ul class="get-in-touch">
-            <li><strong>Email</strong> <a href="mailto:calingasankylematthew@gmail.com">calingasankylematthew@gmail.com</a></li>
+            <li><strong>Email</strong> <a href="mailto:calingasankylematthew@gmail.com?subject=Portfolio%20Inquiry%20from%20Kyle%27s%20Portfolio" class="mailto-link" data-email="calingasankylematthew@gmail.com">calingasankylematthew@gmail.com</a></li>
             <li><strong>Phone</strong> <a href="tel:09514351648">09514351648</a></li>
             <li><strong>Address</strong> Taguig, Metro Manila, Philippines</li>
           </ul>
@@ -478,33 +567,42 @@
 
   <footer class="site-footer">
     <p>© <span id="year"></span> Kyle Matthew Calingasan. All rights reserved.</p>
-    <p class="footer-made-with">Made with love and passion</p>
+    <p class="footer-made-with">Deployed on Vercel · Built with APIs in mind</p>
   </footer>
 
-  <button type="button" class="chat-float" id="chat-float-btn" aria-label="Open chat">
-    <i class="fa-solid fa-comment"></i>
-    <span>Chat with Kyle</span>
+  <button type="button" class="chat-float" id="chat-float-btn" aria-label="Open chat assistant">
+    <i class="fa-solid fa-terminal"></i>
+    <span>Ask about my stack</span>
   </button>
 
-  <div id="chat-panel" class="chat-panel" aria-hidden="true">
-    <div class="chat-panel-header">
-      <h3 class="chat-panel-title">Chat with Kyle</h3>
-      <button type="button" class="chat-panel-close" id="chat-panel-close" aria-label="Close chat">
-        <i class="fa-solid fa-times"></i>
-      </button>
-    </div>
-    <div class="chat-panel-messages" id="chat-messages">
-      <div class="chat-welcome" id="chat-welcome">
-        Hi! I'm an AI assistant for Kyle's portfolio. Ask me about his experience, projects, or skills.
+  <div id="chat-panel" class="chat-panel terminal-window" role="dialog" aria-modal="true" aria-labelledby="chat-panel-title" aria-hidden="true" data-state="normal">
+    <div class="terminal-titlebar chat-panel-titlebar">
+      <div class="chat-titlebar-dots" aria-label="Window controls">
+        <button type="button" class="terminal-dot terminal-dot-red" id="chat-panel-close" aria-label="Close terminal"></button>
+        <button type="button" class="terminal-dot terminal-dot-yellow" id="chat-panel-minimize" aria-label="Minimize terminal"></button>
+        <button type="button" class="terminal-dot terminal-dot-green" id="chat-panel-maximize" aria-label="Maximize terminal"></button>
       </div>
+      <span class="terminal-title" id="chat-panel-title">kyle@portfolio — stack-assistant</span>
     </div>
-    <div class="chat-panel-input-wrap">
-      <textarea id="chat-input" class="chat-input" placeholder="Type a message..." rows="1" maxlength="2000"></textarea>
-      <button type="button" class="chat-send" id="chat-send" aria-label="Send">
-        <i class="fa-solid fa-paper-plane"></i>
-      </button>
+    <div class="chat-terminal-body terminal-body">
+      <div class="chat-panel-messages" id="chat-messages">
+        <div class="chat-welcome" id="chat-welcome">
+          <p class="terminal-line"><span class="terminal-prompt">></span> Initializing stack assistant...</p>
+          <p class="terminal-line"><span class="terminal-prompt">></span> Connected. Ask about Kyle's backend work, cloud certs, IoT projects, or tech stack.</p>
+          <p class="terminal-line terminal-muted">Try: <span class="terminal-suggest">tell me about SafeBite</span></p>
+        </div>
+      </div>
+      <form class="chat-panel-input-wrap" id="chat-form">
+        <label class="chat-input-line" for="chat-input">
+          <span class="terminal-prompt">$</span>
+          <textarea id="chat-input" class="chat-input" placeholder="ask about my stack..." rows="1" maxlength="2000" autocomplete="off" spellcheck="false"></textarea>
+        </label>
+        <button type="submit" class="chat-send" id="chat-send" aria-label="Run command">
+          <i class="fa-solid fa-turn-up" aria-hidden="true"></i>
+        </button>
+      </form>
+      <p class="chat-panel-hint">// powered by Gemini · Enter to run</p>
     </div>
-    <p class="chat-panel-hint">Powered by Gemini</p>
   </div>
 
   <script src="/js/source-guard.js"></script>

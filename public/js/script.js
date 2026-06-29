@@ -1,9 +1,58 @@
 (function () {
   'use strict';
 
-  // Current year in footer
+  // Year in footer
   var yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  // Mailto links — open client + clipboard fallback + visible feedback
+  function showSiteToast(message) {
+    var toast = document.getElementById('site-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'site-toast';
+      toast.className = 'site-toast';
+      toast.setAttribute('role', 'status');
+      toast.setAttribute('aria-live', 'polite');
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.classList.add('is-visible');
+    clearTimeout(showSiteToast._hideTimer);
+    showSiteToast._hideTimer = setTimeout(function () {
+      toast.classList.remove('is-visible');
+    }, 4000);
+  }
+
+  function initMailtoLinks() {
+    document.querySelectorAll('a[href^="mailto:"]').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var href = link.getAttribute('href');
+        if (!href) return;
+
+        var email = link.getAttribute('data-email') || href.replace(/^mailto:/i, '').split('?')[0];
+
+        try {
+          window.location.href = href;
+        } catch (err) {}
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(email).then(function () {
+            showSiteToast('Opening email app… Address copied to clipboard.');
+          }).catch(function () {
+            showSiteToast('Email: ' + email);
+          });
+        } else {
+          showSiteToast('Email: ' + email);
+        }
+      });
+    });
+  }
+
+  initMailtoLinks();
 
   // Theme toggle (dark / light)
   var themeToggle = document.querySelector('.theme-toggle');
@@ -23,7 +72,7 @@
       html.setAttribute('data-theme', 'dark');
       if (themeToggle) themeToggle.setAttribute('aria-label', 'Switch to light mode');
     } else {
-      html.removeAttribute('data-theme');
+      html.setAttribute('data-theme', 'light');
       if (themeToggle) themeToggle.setAttribute('aria-label', 'Switch to dark mode');
     }
     try {
@@ -32,12 +81,13 @@
   }
 
   function isDark() {
-    return html.getAttribute('data-theme') === 'dark';
+    return html.getAttribute('data-theme') !== 'light';
   }
 
   var stored = getStoredTheme();
-  if (stored === 'dark') setTheme(true);
-  else if (stored === 'light') setTheme(false);
+  if (stored === 'light') setTheme(false);
+  else if (stored === 'dark') setTheme(true);
+  else setTheme(true);
 
   if (themeToggle) {
     themeToggle.addEventListener('click', function () {
@@ -574,5 +624,740 @@
     btn.addEventListener('click', function () {
       openProjectModal(id);
     });
+  });
+
+  // Mobile nav toggle
+  var navToggle = document.getElementById('nav-toggle');
+  var navLinks = document.getElementById('nav-links');
+
+  if (navToggle && navLinks) {
+    navToggle.addEventListener('click', function () {
+      var open = navLinks.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      navToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    });
+
+    navLinks.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        navLinks.classList.remove('is-open');
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.setAttribute('aria-label', 'Open menu');
+      });
+    });
+  }
+
+  // Scroll spy for nav — sync highlight with scroll position
+  var navSectionIds = ['about', 'experience', 'tech-stack', 'projects', 'certifications', 'contact'];
+  var navAnchors = document.querySelectorAll('.nav-links a');
+
+  function getNavMarker() {
+    var header = document.querySelector('.site-header');
+    var headerHeight = header ? header.offsetHeight : 57;
+    return window.scrollY + headerHeight + 48;
+  }
+
+  function getSectionDocumentTop(el) {
+    return window.scrollY + el.getBoundingClientRect().top;
+  }
+
+  function setActiveNavSection(id) {
+    navAnchors.forEach(function (anchor) {
+      var href = anchor.getAttribute('href');
+      if (!href || href.charAt(0) !== '#') return;
+      anchor.classList.toggle('is-active', href.slice(1) === id);
+    });
+  }
+
+  function getVisibleSectionHeight(el, headerHeight) {
+    var rect = el.getBoundingClientRect();
+    var top = Math.max(rect.top, headerHeight);
+    var bottom = Math.min(rect.bottom, window.innerHeight);
+    return Math.max(0, bottom - top);
+  }
+
+  function updateActiveNav() {
+    var header = document.querySelector('.site-header');
+    var headerHeight = header ? header.offsetHeight : 57;
+    var current = '';
+    var bestVisible = 0;
+
+    navSectionIds.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+
+      var visible = getVisibleSectionHeight(el, headerHeight);
+      var idIndex = navSectionIds.indexOf(id);
+      var currentIndex = current ? navSectionIds.indexOf(current) : -1;
+
+      if (
+        visible > bestVisible + 2 ||
+        (Math.abs(visible - bestVisible) <= 2 && visible > 0 && idIndex < currentIndex)
+      ) {
+        bestVisible = visible;
+        current = id;
+      }
+    });
+
+    if (!current) {
+      var marker = getNavMarker();
+      navSectionIds.forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el && getSectionDocumentTop(el) <= marker) {
+          current = id;
+        }
+      });
+    }
+
+    setActiveNavSection(current);
+  }
+
+  window.addEventListener('scroll', updateActiveNav, { passive: true });
+  window.addEventListener('resize', updateActiveNav);
+  updateActiveNav();
+
+  navAnchors.forEach(function (anchor) {
+    anchor.addEventListener('click', function (e) {
+      var href = anchor.getAttribute('href');
+      if (!href || href.charAt(0) !== '#') return;
+      var target = document.getElementById(href.slice(1));
+      if (!target) return;
+
+      e.preventDefault();
+      var header = document.querySelector('.site-header');
+      var headerHeight = header ? header.offsetHeight : 57;
+      var top = getSectionDocumentTop(target) - headerHeight - 16;
+
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      setActiveNavSection(href.slice(1));
+    });
+  });
+
+  // Reveal sections on scroll
+  var revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && revealEls.length) {
+    var revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    revealEls.forEach(function (el) {
+      revealObserver.observe(el);
+    });
+  } else {
+    revealEls.forEach(function (el) {
+      el.classList.add('is-visible');
+    });
+  }
+
+  // Hero terminal — interactive command layer
+  var heroTerminalLog = document.getElementById('hero-terminal-log');
+  var heroTerminalScroll = document.getElementById('hero-terminal-scroll');
+  var heroTerminalForm = document.getElementById('hero-terminal-form');
+  var heroTerminalInput = document.getElementById('hero-terminal-input');
+  var heroTerminalSuggestions = document.getElementById('hero-terminal-suggestions');
+  var terminalOutput = document.querySelector('#terminal-output code');
+  var heroCmdHistory = [];
+  var heroHistoryIndex = -1;
+
+  var heroProfileJson = [
+    '{',
+    '  <span class="json-key">"name"</span>: <span class="json-str">"Kyle Matthew Calingasan"</span>,',
+    '  <span class="json-key">"role"</span>: <span class="json-str">"Backend Developer"</span>,',
+    '  <span class="json-key">"location"</span>: <span class="json-str">"Taguig, PH"</span>,',
+    '  <span class="json-key json-key-click" data-cmd="stack" role="button" tabindex="0" title="Run: stack">"tech_stack"</span>: {',
+    '    <span class="json-key">"frontend"</span>: [<span class="json-str">"JavaScript"</span>, <span class="json-str">"React"</span>, <span class="json-str">"HTML/CSS"</span>],',
+    '    <span class="json-key">"backend"</span>: [<span class="json-str">"Python"</span>, <span class="json-str">"PHP"</span>, <span class="json-str">"Java EE"</span>, <span class="json-str">"Node.js"</span>],',
+    '    <span class="json-key">"mobile"</span>: [<span class="json-str">"React Native"</span>, <span class="json-str">"Flutter"</span>],',
+    '    <span class="json-key">"devops"</span>: [<span class="json-str">"AWS"</span>, <span class="json-str">"Docker"</span>, <span class="json-str">"Kubernetes"</span>]',
+    '  },',
+    '  <span class="json-key json-key-click" data-cmd="certs" role="button" tabindex="0" title="Run: certs">"certs"</span>: <span class="json-num">3</span>,',
+    '  <span class="json-key json-key-click" data-cmd="contact" role="button" tabindex="0" title="Run: contact">"status"</span>: <span class="json-str">"open_to_work"</span>',
+    '}'
+  ].join('\n');
+
+  var heroCommands = [
+    'help', 'profile', 'projects', 'certs', 'stack', 'contact',
+    'about', 'experience', 'assistant', 'clear', 'view', 'go'
+  ];
+
+  var heroCmdHistory = [];
+  var heroHistoryIndex = -1;
+  var heroTerminalBusy = false;
+  var heroReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function scrollHeroTerminal() {
+    if (heroTerminalScroll) heroTerminalScroll.scrollTop = heroTerminalScroll.scrollHeight;
+  }
+
+  function escapeTermHtml(s) {
+    var div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  function setHeroTerminalBusy(busy) {
+    heroTerminalBusy = busy;
+    if (heroTerminalInput) heroTerminalInput.disabled = busy;
+    if (heroTerminalForm) heroTerminalForm.classList.toggle('is-busy', busy);
+    var inputLine = heroTerminalForm && heroTerminalForm.querySelector('.hero-terminal-input-line');
+    if (inputLine) inputLine.classList.toggle('is-busy', busy);
+    if (heroTerminalSuggestions) {
+      heroTerminalSuggestions.querySelectorAll('.terminal-cmd-suggest').forEach(function (btn) {
+        btn.disabled = busy;
+      });
+    }
+    if (!busy && heroTerminalInput) {
+      try {
+        heroTerminalInput.focus({ preventScroll: true });
+      } catch (e) {
+        heroTerminalInput.focus();
+      }
+    }
+  }
+
+  function getTypeSpeed(textLength) {
+    if (textLength > 280) return 5;
+    if (textLength > 120) return 8;
+    if (textLength > 50) return 11;
+    return 14;
+  }
+
+  function typeHeroCommandLine(cmd, done) {
+    if (!heroTerminalLog) {
+      done();
+      return;
+    }
+
+    var line = document.createElement('p');
+    line.className = 'terminal-line';
+    var cmdSpan = document.createElement('span');
+    cmdSpan.className = 'hero-terminal-cmd';
+    line.innerHTML = '<span class="terminal-prompt">$</span> ';
+    line.appendChild(cmdSpan);
+    heroTerminalLog.appendChild(line);
+
+    if (heroReducedMotion) {
+      cmdSpan.textContent = cmd;
+      scrollHeroTerminal();
+      done();
+      return;
+    }
+
+    var index = 0;
+    var speed = 10;
+
+    function tick() {
+      if (index >= cmd.length) {
+        scrollHeroTerminal();
+        done();
+        return;
+      }
+      index += 1;
+      cmdSpan.textContent = cmd.slice(0, index);
+      scrollHeroTerminal();
+      setTimeout(tick, speed);
+    }
+
+    tick();
+  }
+
+  function typeHeroOutput(text, isHtml, done) {
+    if (!heroTerminalLog) {
+      done();
+      return;
+    }
+
+    var block = document.createElement('div');
+    block.className = 'hero-terminal-out is-typing';
+    var content = document.createElement('span');
+    content.className = 'hero-terminal-out-text';
+    var cursor = document.createElement('span');
+    cursor.className = 'hero-terminal-type-cursor';
+    cursor.setAttribute('aria-hidden', 'true');
+
+    block.appendChild(content);
+    block.appendChild(cursor);
+    heroTerminalLog.appendChild(block);
+
+    var plain = isHtml
+      ? text.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '')
+      : text;
+
+    if (heroReducedMotion) {
+      cursor.remove();
+      block.classList.remove('is-typing');
+      if (isHtml) block.innerHTML = text;
+      else content.textContent = text;
+      scrollHeroTerminal();
+      done();
+      return;
+    }
+
+    var index = 0;
+    var speed = getTypeSpeed(plain.length);
+
+    function tick() {
+      if (index >= plain.length) {
+        cursor.remove();
+        block.classList.remove('is-typing');
+        if (isHtml) {
+          content.remove();
+          block.innerHTML = text;
+        }
+        scrollHeroTerminal();
+        done();
+        return;
+      }
+      index += 1;
+      content.textContent = plain.slice(0, index);
+      scrollHeroTerminal();
+      setTimeout(tick, speed);
+    }
+
+    setTimeout(tick, 80);
+  }
+
+  function runHeroResponse(cmd, output, options) {
+    options = options || {};
+
+    if (!options.clearLog) {
+      heroCmdHistory.push(cmd);
+      heroHistoryIndex = heroCmdHistory.length;
+    }
+
+    setHeroTerminalBusy(true);
+
+    typeHeroCommandLine(cmd, function () {
+      if (options.clearLog) {
+        if (heroTerminalLog) heroTerminalLog.innerHTML = '';
+        setHeroTerminalBusy(false);
+        return;
+      }
+
+      if (output == null || output === '') {
+        setHeroTerminalBusy(false);
+        if (options.onComplete) options.onComplete();
+        return;
+      }
+
+      setTimeout(function () {
+        typeHeroOutput(output, !!options.isHtml, function () {
+          setHeroTerminalBusy(false);
+          if (options.onComplete) options.onComplete();
+        });
+      }, options.pause || 140);
+    });
+  }
+
+  function scrollToSection(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var header = document.querySelector('.site-header');
+    var headerHeight = header ? header.offsetHeight : 57;
+    var top = window.scrollY + el.getBoundingClientRect().top - headerHeight - 16;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+  }
+
+  function getProjectsListText() {
+    return Object.keys(projectData).map(function (id) {
+      var p = projectData[id];
+      var slug = id;
+      return slug + ' — ' + p.tagline;
+    }).join('\n') + '\n\nType: view <project>  e.g. view safebite';
+  }
+
+  function getCertsListText() {
+    return [
+      'AWS Academy Graduate — Cloud Foundations',
+      'Red Hat Application Development I: Java EE (AD183)',
+      'Red Hat OpenShift Development I: Containers with Podman (DO188)'
+    ].join('\n');
+  }
+
+  function getStackText() {
+    return [
+      'Frontend:  JavaScript, React, HTML/CSS, Vite',
+      'Backend:   Python, PHP, Java EE, Node.js, RESTful API',
+      'Mobile:    React Native, Flutter',
+      'DevOps:    AWS, Docker, Kubernetes, OpenShift, Podman'
+    ].join('\n');
+  }
+
+  function getContactHtml() {
+    return [
+      'Email:    calingasankylematthew@gmail.com',
+      'Phone:    09514351648',
+      'GitHub:   github.com/kayl10913',
+      'LinkedIn: kyle-matthew-calingasan',
+      'Location: Taguig, Metro Manila, Philippines',
+      '',
+      'Type: go contact — to jump to the contact section'
+    ].join('<br>');
+  }
+
+  function getHelpText() {
+    return [
+      'Available commands:',
+      '  help        — show this list',
+      '  profile     — show profile JSON',
+      '  projects    — list recent projects',
+      '  view <id>   — open project preview',
+      '  certs       — list cloud certifications',
+      '  stack       — show tech stack',
+      '  contact     — email, phone & social links',
+      '  about       — about summary in terminal',
+      '  experience  — experience summary in terminal',
+      '  go <section>— scroll to section (e.g. go contact)',
+      '  assistant   — open AI stack assistant',
+      '  clear       — clear terminal output'
+    ].join('\n');
+  }
+
+  function openStackAssistant() {
+    if (typeof window.openPortfolioChat === 'function') {
+      window.openPortfolioChat();
+      return;
+    }
+    var chatBtn = document.getElementById('chat-float-btn');
+    if (chatBtn) chatBtn.click();
+  }
+
+  function runHeroCommand(raw) {
+    var cmd = (raw || '').trim();
+    if (!cmd || heroTerminalBusy) return;
+
+    var parts = cmd.toLowerCase().split(/\s+/);
+    var name = parts[0];
+    var arg = parts.slice(1).join(' ');
+
+    if (name === 'help' || name === '?') {
+      runHeroResponse(cmd, getHelpText());
+      return;
+    }
+
+    if (name === 'clear') {
+      runHeroResponse(cmd, null, { clearLog: true });
+      return;
+    }
+
+    if (name === 'profile') {
+      runHeroResponse(cmd, [
+        '{',
+        '  "name": "Kyle Matthew Calingasan",',
+        '  "role": "Backend Developer",',
+        '  "location": "Taguig, PH",',
+        '  "tech_stack": {',
+        '    "frontend": ["JavaScript", "React", "HTML/CSS"],',
+        '    "backend": ["Python", "PHP", "Java EE", "Node.js"],',
+        '    "mobile": ["React Native", "Flutter"],',
+        '    "devops": ["AWS", "Docker", "Kubernetes"]',
+        '  },',
+        '  "certs": 3,',
+        '  "status": "open_to_work"',
+        '}'
+      ].join('\n'));
+      return;
+    }
+
+    if (name === 'projects') {
+      runHeroResponse(cmd, getProjectsListText());
+      return;
+    }
+
+    if (name === 'certs') {
+      runHeroResponse(cmd, getCertsListText());
+      return;
+    }
+
+    if (name === 'stack') {
+      runHeroResponse(cmd, getStackText());
+      return;
+    }
+
+    if (name === 'contact') {
+      runHeroResponse(cmd, getContactHtml(), { isHtml: true });
+      return;
+    }
+
+    if (name === 'about') {
+      runHeroResponse(cmd, 'Information Technology Specialist · Batangas State University graduate.\nBackend systems, RESTful APIs, AWS, IoT & AI.\nType: go about — to jump to the section');
+      return;
+    }
+
+    if (name === 'experience') {
+      runHeroResponse(cmd, [
+        'IT Support Intern — Batangas State University TNEU (Feb–May 2026)',
+        'Web Developer Intern — Tech Executive Labs (Feb–May 2025)',
+        '',
+        'Type: go experience — to jump to the section'
+      ].join('\n'));
+      return;
+    }
+
+    if (name === 'go') {
+      var sectionId = arg.replace(/\s+/g, '-');
+      var valid = ['about', 'experience', 'tech-stack', 'projects', 'certifications', 'contact'];
+      if (!sectionId || valid.indexOf(sectionId) === -1) {
+        runHeroResponse(cmd, 'Usage: go <section>\nSections: about, experience, tech-stack, projects, certifications, contact');
+        return;
+      }
+      runHeroResponse(cmd, 'Navigating to #' + sectionId + '...', {
+        onComplete: function () {
+          scrollToSection(sectionId);
+        }
+      });
+      return;
+    }
+
+    if (name === 'assistant' || name === 'chat') {
+      runHeroResponse(cmd, 'Opening stack assistant...', {
+        onComplete: openStackAssistant
+      });
+      return;
+    }
+
+    if (name === 'view') {
+      var projectId = arg.replace(/\s+/g, '-');
+      if (!projectId || !projectData[projectId]) {
+        runHeroResponse(cmd, 'Project not found. Try: view safebite | view mood-studios | view midwest | view unit-testing');
+        return;
+      }
+      runHeroResponse(cmd, 'Opening ' + projectData[projectId].title + '...', {
+        onComplete: function () {
+          openProjectModal(projectId);
+        }
+      });
+      return;
+    }
+
+    if (projectData[name]) {
+      runHeroResponse(cmd, 'Opening ' + projectData[name].title + '...', {
+        onComplete: function () {
+          openProjectModal(name);
+        }
+      });
+      return;
+    }
+
+    runHeroResponse(cmd, "command not found: '" + cmd + "'. Type 'help' for available commands.");
+  }
+
+  function wireJsonKeyClicks() {
+    document.querySelectorAll('#terminal-output .json-key-click').forEach(function (key) {
+      function activate() {
+        var cmd = key.getAttribute('data-cmd');
+        if (cmd) runHeroCommand(cmd);
+      }
+      key.addEventListener('click', activate);
+      key.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          activate();
+        }
+      });
+    });
+  }
+
+  function enableHeroTerminal() {
+    if (heroTerminalSuggestions) heroTerminalSuggestions.hidden = false;
+    if (heroTerminalInput) {
+      heroTerminalInput.disabled = false;
+      heroTerminalInput.placeholder = 'type a command...';
+    }
+    wireJsonKeyClicks();
+
+    if (heroTerminalSuggestions) {
+      heroTerminalSuggestions.querySelectorAll('.terminal-cmd-suggest').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (heroTerminalBusy) return;
+          var cmd = btn.getAttribute('data-cmd');
+          if (cmd) runHeroCommand(cmd);
+        });
+      });
+    }
+
+    if (heroTerminalForm && heroTerminalInput) {
+      heroTerminalForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (heroTerminalBusy) return;
+        var value = heroTerminalInput.value;
+        heroTerminalInput.value = '';
+        runHeroCommand(value);
+      });
+
+      heroTerminalInput.addEventListener('keydown', function (e) {
+        if (heroTerminalBusy && e.key !== 'Escape') return;
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (!heroCmdHistory.length) return;
+          if (heroHistoryIndex > 0) heroHistoryIndex -= 1;
+          heroTerminalInput.value = heroCmdHistory[heroHistoryIndex] || '';
+          return;
+        }
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (!heroCmdHistory.length) return;
+          if (heroHistoryIndex < heroCmdHistory.length - 1) {
+            heroHistoryIndex += 1;
+            heroTerminalInput.value = heroCmdHistory[heroHistoryIndex];
+          } else {
+            heroHistoryIndex = heroCmdHistory.length;
+            heroTerminalInput.value = '';
+          }
+          return;
+        }
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          var val = heroTerminalInput.value.trim().toLowerCase();
+          if (!val) return;
+          var matches = heroCommands.filter(function (c) {
+            return c.indexOf(val) === 0;
+          });
+          if (matches.length === 1) heroTerminalInput.value = matches[0];
+        }
+      });
+    }
+  }
+
+  if (terminalOutput) {
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function finishBoot() {
+      terminalOutput.innerHTML = heroProfileJson;
+      enableHeroTerminal();
+    }
+
+    if (prefersReduced) {
+      finishBoot();
+    } else {
+      var charIndex = 0;
+      var plainText = heroProfileJson.replace(/<[^>]+>/g, '');
+      var speed = 18;
+
+      function typeNext() {
+        if (charIndex >= plainText.length) {
+          finishBoot();
+          return;
+        }
+        charIndex += 1;
+        terminalOutput.textContent = plainText.slice(0, charIndex);
+        scrollHeroTerminal();
+        setTimeout(typeNext, speed);
+      }
+
+      setTimeout(typeNext, 400);
+    }
+  }
+
+  // Hero terminal window controls (minimize / maximize / close)
+  var heroTerminalWindow = document.getElementById('hero-terminal-window');
+  var heroTerminalMinimize = document.getElementById('hero-terminal-minimize');
+  var heroTerminalMaximize = document.getElementById('hero-terminal-maximize');
+  var heroTerminalClose = document.getElementById('hero-terminal-close');
+  var heroTerminalTitlebar = heroTerminalWindow && heroTerminalWindow.querySelector('.hero-terminal-titlebar');
+
+  function getTerminalState() {
+    return heroTerminalWindow ? heroTerminalWindow.getAttribute('data-state') || 'normal' : 'normal';
+  }
+
+  function setTerminalState(state) {
+    if (!heroTerminalWindow) return;
+
+    heroTerminalWindow.classList.remove('is-minimized', 'is-maximized', 'is-closed');
+    document.body.classList.remove('hero-terminal-maximized');
+
+    if (state === 'minimized') heroTerminalWindow.classList.add('is-minimized');
+    if (state === 'maximized') {
+      heroTerminalWindow.classList.add('is-maximized');
+      document.body.classList.add('hero-terminal-maximized');
+    }
+    if (state === 'closed') heroTerminalWindow.classList.add('is-closed');
+
+    heroTerminalWindow.setAttribute('data-state', state);
+
+    if (heroTerminalMaximize) {
+      heroTerminalMaximize.setAttribute(
+        'aria-label',
+        state === 'maximized' ? 'Restore terminal size' : 'Maximize terminal'
+      );
+    }
+    if (heroTerminalMinimize) {
+      heroTerminalMinimize.setAttribute(
+        'aria-label',
+        state === 'minimized' ? 'Restore terminal' : 'Minimize terminal'
+      );
+    }
+    if (heroTerminalClose) {
+      heroTerminalClose.setAttribute(
+        'aria-label',
+        state === 'closed' ? 'Restore terminal' : 'Close terminal'
+      );
+    }
+
+    if (state === 'normal' && heroTerminalInput && !heroTerminalBusy) {
+      window.setTimeout(function () {
+        try {
+          heroTerminalInput.focus({ preventScroll: true });
+        } catch (e) {
+          heroTerminalInput.focus();
+        }
+      }, 350);
+    }
+  }
+
+  if (heroTerminalMinimize) {
+    heroTerminalMinimize.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var state = getTerminalState();
+      if (state === 'minimized') setTerminalState('normal');
+      else if (state === 'maximized') setTerminalState('minimized');
+      else if (state !== 'closed') setTerminalState('minimized');
+    });
+  }
+
+  if (heroTerminalMaximize) {
+    heroTerminalMaximize.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var state = getTerminalState();
+      if (state === 'maximized') setTerminalState('normal');
+      else if (state === 'closed') setTerminalState('normal');
+      else setTerminalState('maximized');
+    });
+  }
+
+  if (heroTerminalClose) {
+    heroTerminalClose.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var state = getTerminalState();
+      if (state === 'closed') setTerminalState('normal');
+      else setTerminalState('closed');
+    });
+  }
+
+  if (heroTerminalTitlebar) {
+    heroTerminalTitlebar.addEventListener('click', function (e) {
+      if (e.target.closest('.hero-terminal-dots')) return;
+      var state = getTerminalState();
+      if (state === 'closed' || state === 'minimized') setTerminalState('normal');
+    });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && getTerminalState() === 'maximized') {
+      setTerminalState('normal');
+    }
+  });
+
+  document.body.addEventListener('click', function (e) {
+    if (getTerminalState() !== 'maximized') return;
+    if (heroTerminalWindow && !heroTerminalWindow.contains(e.target)) {
+      setTerminalState('normal');
+    }
   });
 })();

@@ -4,6 +4,10 @@
   var chatFloatBtn = document.getElementById('chat-float-btn');
   var chatPanel = document.getElementById('chat-panel');
   var chatPanelClose = document.getElementById('chat-panel-close');
+  var chatPanelMinimize = document.getElementById('chat-panel-minimize');
+  var chatPanelMaximize = document.getElementById('chat-panel-maximize');
+  var chatPanelTitlebar = chatPanel && chatPanel.querySelector('.chat-panel-titlebar');
+  var chatForm = document.getElementById('chat-form');
   var chatMessages = document.getElementById('chat-messages');
   var chatWelcome = document.getElementById('chat-welcome');
   var chatInput = document.getElementById('chat-input');
@@ -12,17 +16,79 @@
   var history = [];
   var isLoading = false;
 
+  function getChatWindowState() {
+    return chatPanel ? chatPanel.getAttribute('data-state') || 'normal' : 'normal';
+  }
+
+  function updateChatWindowLabels(state) {
+    if (chatPanelMaximize) {
+      chatPanelMaximize.setAttribute(
+        'aria-label',
+        state === 'maximized' ? 'Restore assistant size' : 'Maximize assistant'
+      );
+    }
+    if (chatPanelMinimize) {
+      chatPanelMinimize.setAttribute(
+        'aria-label',
+        state === 'minimized' ? 'Restore assistant' : 'Minimize assistant'
+      );
+    }
+  }
+
+  function setChatWindowState(state) {
+    if (!chatPanel) return;
+
+    chatPanel.classList.remove('is-minimized', 'is-maximized');
+    document.body.classList.remove('chat-assistant-maximized');
+
+    if (state === 'minimized') chatPanel.classList.add('is-minimized');
+    if (state === 'maximized') {
+      chatPanel.classList.add('is-maximized');
+      document.body.classList.add('chat-assistant-maximized');
+    }
+
+    chatPanel.setAttribute('data-state', state);
+    updateChatWindowLabels(state);
+
+    if (state === 'normal' && chatInput && chatPanel.classList.contains('is-open')) {
+      window.setTimeout(function () {
+        try {
+          chatInput.focus({ preventScroll: true });
+        } catch (e) {
+          chatInput.focus();
+        }
+      }, 350);
+    }
+  }
+
+  function resetChatWindowState() {
+    setChatWindowState('normal');
+  }
+
   function openPanel() {
     if (!chatPanel) return;
     chatPanel.classList.add('is-open');
     chatPanel.setAttribute('aria-hidden', 'false');
-    if (chatInput) chatInput.focus();
+    if (chatFloatBtn) chatFloatBtn.classList.add('is-hidden');
+    document.body.classList.add('chat-terminal-open');
+    if (chatInput) {
+      window.setTimeout(function () {
+        try {
+          chatInput.focus({ preventScroll: true });
+        } catch (e) {
+          chatInput.focus();
+        }
+      }, 180);
+    }
   }
 
   function closePanel() {
     if (!chatPanel) return;
     chatPanel.classList.remove('is-open');
     chatPanel.setAttribute('aria-hidden', 'true');
+    if (chatFloatBtn) chatFloatBtn.classList.remove('is-hidden');
+    document.body.classList.remove('chat-terminal-open');
+    resetChatWindowState();
   }
 
   function escapeHtml(s) {
@@ -39,19 +105,37 @@
     return escaped;
   }
 
-  function addMessage(role, text, isError) {
+  function scrollToBottom() {
+    if (chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function addMessage(role, text) {
     if (!chatMessages) return;
     if (chatWelcome) chatWelcome.style.display = 'none';
+
     var div = document.createElement('div');
-    div.className = 'chat-msg ' + (role === 'user' ? 'user' : role === 'error' ? 'error' : 'model');
-    if (role === 'loading') div.className = 'chat-msg model chat-msg-loading';
-    if (role === 'model') {
-      div.innerHTML = renderMarkdown(text);
+    var safeText = escapeHtml(text);
+
+    if (role === 'user') {
+      div.className = 'chat-msg chat-msg-user terminal-line';
+      div.innerHTML = '<span class="terminal-prompt">$</span> <span class="chat-command">' + safeText + '</span>';
+    } else if (role === 'error') {
+      div.className = 'chat-msg chat-msg-error terminal-line';
+      div.innerHTML = '<span class="terminal-prompt terminal-prompt-error">!</span> <span class="chat-error-text">' + safeText + '</span>';
+    } else if (role === 'loading') {
+      div.className = 'chat-msg chat-msg-loading terminal-line';
+      div.setAttribute('aria-live', 'polite');
+      div.setAttribute('aria-label', 'Assistant is typing');
+      div.innerHTML = '<span class="terminal-prompt-out">></span> <span class="chat-typing-dots"><span></span><span></span><span></span></span>';
     } else {
-      div.textContent = text;
+      div.className = 'chat-msg chat-msg-model terminal-block';
+      div.innerHTML =
+        '<p class="terminal-line terminal-line-out"><span class="terminal-prompt-out">></span></p>' +
+        '<div class="terminal-output-text">' + renderMarkdown(text) + '</div>';
     }
+
     chatMessages.appendChild(div);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    scrollToBottom();
   }
 
   function removeLoadingMessage() {
@@ -67,17 +151,7 @@
     chatInput.value = '';
     addMessage('user', text);
     history.push({ role: 'user', text: text });
-
-    var loadingEl = document.createElement('div');
-    loadingEl.className = 'chat-msg model chat-msg-loading';
-    loadingEl.setAttribute('aria-live', 'polite');
-    loadingEl.setAttribute('aria-label', 'AI is typing');
-    var typingWrap = document.createElement('span');
-    typingWrap.className = 'chat-typing-dots';
-    typingWrap.innerHTML = '<span></span><span></span><span></span>';
-    loadingEl.appendChild(typingWrap);
-    chatMessages.appendChild(loadingEl);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    addMessage('loading', '');
 
     isLoading = true;
     chatSend.disabled = true;
@@ -106,19 +180,93 @@
       .finally(function () {
         isLoading = false;
         chatSend.disabled = false;
-        if (chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight;
+        scrollToBottom();
+        if (chatInput) {
+          try {
+            chatInput.focus({ preventScroll: true });
+          } catch (e) {
+            chatInput.focus();
+          }
+        }
       });
   }
 
   if (chatFloatBtn) chatFloatBtn.addEventListener('click', openPanel);
-  if (chatPanelClose) chatPanelClose.addEventListener('click', closePanel);
-  if (chatSend) chatSend.addEventListener('click', sendMessage);
+
+  if (chatPanelClose) {
+    chatPanelClose.addEventListener('click', function (e) {
+      e.stopPropagation();
+      closePanel();
+    });
+  }
+
+  if (chatPanelMinimize) {
+    chatPanelMinimize.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (!chatPanel || !chatPanel.classList.contains('is-open')) return;
+      var state = getChatWindowState();
+      if (state === 'minimized') setChatWindowState('normal');
+      else if (state === 'maximized') setChatWindowState('minimized');
+      else setChatWindowState('minimized');
+    });
+  }
+
+  if (chatPanelMaximize) {
+    chatPanelMaximize.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (!chatPanel || !chatPanel.classList.contains('is-open')) return;
+      var state = getChatWindowState();
+      if (state === 'maximized') setChatWindowState('normal');
+      else setChatWindowState('maximized');
+    });
+  }
+
+  if (chatPanelTitlebar) {
+    chatPanelTitlebar.addEventListener('click', function (e) {
+      if (e.target.closest('.chat-titlebar-dots')) return;
+      if (getChatWindowState() === 'minimized') setChatWindowState('normal');
+    });
+  }
+
+  if (chatForm) {
+    chatForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      sendMessage();
+    });
+  }
+
+  if (chatSend) {
+    chatSend.addEventListener('click', function (e) {
+      e.preventDefault();
+      sendMessage();
+    });
+  }
+
   if (chatInput) {
     chatInput.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         sendMessage();
       }
+      if (e.key === 'Escape') {
+        if (getChatWindowState() === 'maximized') setChatWindowState('normal');
+        else closePanel();
+      }
     });
   }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape' || !chatPanel || !chatPanel.classList.contains('is-open')) return;
+    if (getChatWindowState() === 'maximized') setChatWindowState('normal');
+    else closePanel();
+  });
+
+  document.body.addEventListener('click', function (e) {
+    if (getChatWindowState() !== 'maximized') return;
+    if (chatPanel && !chatPanel.contains(e.target)) {
+      setChatWindowState('normal');
+    }
+  });
+
+  window.openPortfolioChat = openPanel;
 })();
