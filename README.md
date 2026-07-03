@@ -1,6 +1,6 @@
 # Kyle Matthew Calingasan — Portfolio
 
-A CV-style portfolio website built with **Node.js** and **Express**, inspired by [bryllim.com](https://bryllim.com/).
+A CV-style portfolio website built with **Node.js** and **Express**.
 
 ## Run locally
 
