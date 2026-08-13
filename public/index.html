@@ -8,6 +8,12 @@
   <meta name="author" content="Kyle Matthew Calingasan" />
   <meta name="keywords" content="Kyle Matthew Calingasan, Kyle Calingasan, Information Technology Specialist, backend developer Philippines, Batangas State University, Taguig, Lipa City, Web Developer portfolio, SafeBite, Tech Executive Labs, IoT, AWS certified" />
   <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#0a0e14" />
+
+  <!-- Icons -->
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
   <!-- Open Graph / Facebook & LinkedIn -->
   <meta property="og:type" content="website" />
@@ -78,9 +84,115 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
   <link rel="stylesheet" href="/css/styles.css" />
+
+  <script>
+    // Apply the stored theme before first paint, otherwise light-mode visitors
+    // get a flash of the dark theme hardcoded on <html>.
+    (function () {
+      try {
+        var t = localStorage.getItem('portfolio-theme');
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- Boot screen styles are inlined so the overlay paints without waiting on
+       styles.css or the webfonts it is there to cover for. -->
+  <style>
+    .boot-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: #0a0e14;
+      color: #8b949e;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.85;
+      transition: opacity 0.45s ease, visibility 0.45s ease;
+      /* Backstop: if the script fails to load, never trap the page behind it.
+         Sits beyond the script's own 5s cap so it only fires on real failure. */
+      animation: boot-failsafe 0s linear 8s forwards;
+    }
+
+    [data-theme="light"] .boot-screen {
+      background: #f6f8fa;
+      color: #656d76;
+    }
+
+    .boot-screen.is-done {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    @keyframes boot-failsafe {
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    .boot-lines {
+      width: min(420px, 100%);
+      margin: 0;
+      white-space: pre;
+    }
+
+    .boot-line {
+      opacity: 0;
+      animation: boot-line-in 0.2s ease forwards;
+    }
+
+    @keyframes boot-line-in {
+      from { opacity: 0; transform: translateY(3px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .boot-ok { color: #3fb950; }
+    .boot-cmd { color: #ff9900; }
+    [data-theme="light"] .boot-ok { color: #1a7f37; }
+    [data-theme="light"] .boot-cmd { color: #cf7100; }
+
+    .boot-caret {
+      display: inline-block;
+      width: 7px;
+      height: 1em;
+      vertical-align: -2px;
+      background: #3fb950;
+      animation: boot-caret 1s steps(2) infinite;
+    }
+
+    @keyframes boot-caret {
+      50% { opacity: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .boot-screen { display: none; }
+    }
+  </style>
 </head>
 <body>
+  <div id="boot-screen" class="boot-screen" role="status" aria-live="polite" aria-label="Loading portfolio">
+    <pre class="boot-lines" id="boot-lines"></pre>
+  </div>
+  <noscript><style>.boot-screen { display: none !important; }</style></noscript>
+  <script>
+    // Only boot once per session, and never for reduced-motion visitors.
+    // Removing it here avoids showing a frame of it before the script decides.
+    (function () {
+      var seen = false;
+      try { seen = sessionStorage.getItem('portfolio-booted') === '1'; } catch (e) {}
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (seen || reduce) {
+        var el = document.getElementById('boot-screen');
+        if (el && el.parentNode) el.parentNode.removeChild(el);
+      }
+    })();
+  </script>
+  <script src="/js/boot-screen.js"></script>
+
   <div class="grid-bg" aria-hidden="true"></div>
+  <canvas id="bg-dots" class="bg-dots" data-spacing="14" data-opacity="0.3" data-speed="1" aria-hidden="true"></canvas>
 
   <header class="site-header">
     <nav class="nav" aria-label="Main">
@@ -111,8 +223,8 @@
         <div class="hero-profile">
           <div class="hero-profile-main">
             <div class="hero-avatar" aria-hidden="true">
-              <img class="hero-avatar-img hero-avatar-img-default" src="/img/Kyle%20Pic%201.jpg" alt="Kyle Matthew Calingasan" />
-              <img class="hero-avatar-img hero-avatar-img-hover" src="/img/Kyle%20Pic%202.png" alt="Kyle Matthew Calingasan portrait painting" />
+              <img class="hero-avatar-img hero-avatar-img-default" src="/img/Kyle%20Pic%201.webp" alt="Kyle Matthew Calingasan" width="160" height="160" />
+              <img class="hero-avatar-img hero-avatar-img-hover" src="/img/Kyle%20Pic%202.webp" alt="Kyle Matthew Calingasan portrait painting" width="160" height="160" loading="lazy" />
               <span class="hero-avatar-fallback">KC</span>
             </div>
             <div class="hero-info">
@@ -321,7 +433,7 @@
       <div class="project-grid">
         <article class="project-card">
           <button type="button" class="project-card-thumb project-view-btn" data-project-id="mood-studios" aria-label="View Mood Studios project">
-            <img src="/img/projects/moodstudios.png" alt="Mood Studios application screenshot" loading="lazy" />
+            <img src="/img/projects/moodstudios.webp" alt="Mood Studios application screenshot" loading="lazy" />
           </button>
           <div class="project-card-content">
             <h3 class="project-title">Mood Studios Web and Mobile Application</h3>
@@ -332,7 +444,7 @@
         </article>
         <article class="project-card">
           <button type="button" class="project-card-thumb project-view-btn" data-project-id="safebite" aria-label="View SafeBite project">
-            <img src="/img/projects/safebite.png" alt="SafeBite platform screenshot" loading="lazy" />
+            <img src="/img/projects/safebite.webp" alt="SafeBite platform screenshot" loading="lazy" />
           </button>
           <div class="project-card-content">
             <h3 class="project-title">SafeBite: Smart Monitoring Platform for Food Spoilage</h3>
@@ -343,7 +455,7 @@
         </article>
         <article class="project-card">
           <button type="button" class="project-card-thumb project-view-btn" data-project-id="midwest" aria-label="View Midwest project">
-            <img src="/img/projects/midwest.png" alt="Midwest dashboard screenshot" loading="lazy" />
+            <img src="/img/projects/midwest.webp" alt="Midwest dashboard screenshot" loading="lazy" />
           </button>
           <div class="project-card-content">
             <h3 class="project-title">Midwest Web and Mobile Application</h3>
@@ -595,7 +707,7 @@
       <form class="chat-panel-input-wrap" id="chat-form">
         <label class="chat-input-line" for="chat-input">
           <span class="terminal-prompt">$</span>
-          <textarea id="chat-input" class="chat-input" placeholder="ask about my stack..." rows="1" maxlength="2000" autocomplete="off" spellcheck="false"></textarea>
+          <textarea id="chat-input" class="chat-input" placeholder="ask about my stack..." rows="1" maxlength="1000" autocomplete="off" spellcheck="false"></textarea>
         </label>
         <button type="submit" class="chat-send" id="chat-send" aria-label="Run command">
           <i class="fa-solid fa-turn-up" aria-hidden="true"></i>
@@ -605,7 +717,7 @@
     </div>
   </div>
 
-  <script src="/js/source-guard.js"></script>
+  <script src="/js/dot-bg.js" defer></script>
   <script src="/js/script.js"></script>
   <script src="/js/chat.js"></script>
 </body>

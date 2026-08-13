@@ -67,7 +67,7 @@
     }
   }
 
-  function setTheme(dark) {
+  function applyTheme(dark) {
     if (dark) {
       html.setAttribute('data-theme', 'dark');
       if (themeToggle) themeToggle.setAttribute('aria-label', 'Switch to light mode');
@@ -80,25 +80,97 @@
     } catch (e) {}
   }
 
+  function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function spinThemeIcon() {
+    if (!themeToggle || prefersReducedMotion()) return;
+    themeToggle.classList.remove('is-switching');
+    // Force a reflow so the animation restarts on rapid clicks.
+    void themeToggle.offsetWidth;
+    themeToggle.classList.add('is-switching');
+  }
+
+  // Reveals the new theme as a circle growing out from the toggle button.
+  // Falls back to an instant swap where View Transitions are unsupported.
+  function setTheme(dark, origin) {
+    spinThemeIcon();
+
+    if (!document.startViewTransition || prefersReducedMotion() || !origin) {
+      applyTheme(dark);
+      return;
+    }
+
+    var x = origin.x;
+    var y = origin.y;
+    var radius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    // The incoming layer renders live, so the site's own colour transitions
+    // would fade inside the reveal and muddy it. Freeze them for the duration.
+    html.classList.add('theme-switching');
+
+    var transition = document.startViewTransition(function () {
+      applyTheme(dark);
+    });
+
+    transition.finished
+      .catch(function () {})
+      .then(function () {
+        html.classList.remove('theme-switching');
+      });
+
+    transition.ready
+      .then(function () {
+        html.animate(
+          {
+            clipPath: [
+              'circle(0px at ' + x + 'px ' + y + 'px)',
+              'circle(' + radius + 'px at ' + x + 'px ' + y + 'px)',
+            ],
+          },
+          {
+            duration: 550,
+            easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+            pseudoElement: '::view-transition-new(root)',
+          }
+        );
+      })
+      .catch(function () {});
+  }
+
   function isDark() {
     return html.getAttribute('data-theme') !== 'light';
   }
 
   var stored = getStoredTheme();
-  if (stored === 'light') setTheme(false);
-  else if (stored === 'dark') setTheme(true);
-  else setTheme(true);
+  if (stored === 'light') applyTheme(false);
+  else if (stored === 'dark') applyTheme(true);
+  else applyTheme(true);
 
   if (themeToggle) {
-    themeToggle.addEventListener('click', function () {
-      setTheme(!isDark());
+    themeToggle.addEventListener('click', function (e) {
+      // Keyboard activation reports 0,0 — fall back to the button's centre.
+      var rect = themeToggle.getBoundingClientRect();
+      var origin = e.clientX || e.clientY
+        ? { x: e.clientX, y: e.clientY }
+        : { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+
+      setTheme(!isDark(), origin);
+    });
+
+    themeToggle.addEventListener('animationend', function () {
+      themeToggle.classList.remove('is-switching');
     });
   }
 
   // Certification Details modal
   var certData = {
     aws: {
-      img: '/img/badges/aws-academy-graduate-cloud-foundations-training-bad.png',
+      img: '/img/badges/aws-academy-graduate-cloud-foundations-training-bad.webp',
       title: 'AWS Academy Graduate - Cloud Foundations - Training Badge',
       org: 'Amazon Web Services Training and Certification',
       desc: 'Earners of this badge have taken the AWS Academy Cloud Foundations course and have been introduced to AWS products, services, and common solutions.',
@@ -109,7 +181,7 @@
       skills: ['AWS Architecture', 'AWS Cloud', 'AWS Core Services', 'AWS Pricing', 'AWS Support']
     },
     'redhat-ad183': {
-      img: '/img/badges/red-hat-application-development-i-programming-in-ja.1.png',
+      img: '/img/badges/red-hat-application-development-i-programming-in-ja.1.webp',
       title: 'Red Hat Application Development I: Programming in Java EE (AD183 - RHA) - Ver. 7.0',
       org: 'Red Hat',
       desc: 'This credential verifies the attendance of the Red Hat Application Development I: Programming in Java EE course.',
@@ -120,7 +192,7 @@
       skills: ['Java Enterprise Edition (JEE)', 'Red Hat', 'Red Hat Academy', 'Red Hat Application Development']
     },
     'redhat-do188': {
-      img: '/img/badges/red-hat-openshift-development-i-introduction-to-con.2.png',
+      img: '/img/badges/red-hat-openshift-development-i-introduction-to-con.2.webp',
       title: 'Red Hat OpenShift Development I: Introduction to Containers with Podman (DO188 - RHA) - Ver. 4.18',
       org: 'Red Hat',
       desc: 'This credential verifies the attendance of the Red Hat OpenShift Development I: Introduction to Containers with Podman course.',
@@ -131,50 +203,50 @@
       skills: ['DevOps', 'Red Hat OpenShift', 'Basic container networking', 'Containers', 'OpenShift', 'Podman', 'Podman Desktop', 'Red Hat Academy', 'Run multi-container applications', 'Troubleshoot Container Deployments']
     },
     'databiz-2025': {
-      img: '/img/certificates/5f9e17b9-1e39-4a98-97a3-9171e3384477.jpg',
+      img: '/img/certificates/5f9e17b9-1e39-4a98-97a3-9171e3384477.webp',
       title: 'Certificate of Participation — DATABIZ 2025',
       org: 'Batangas Information Technology Society',
       desc: 'For actively participating in the DATABIZ 2025 Conference with the theme "Future-Proof Skills: Empowering Students with Data, AI, and Analytics" held on October 25, 2025 at Lipa Academy for Sports, Culture, and Arts (LASCA), Lipa City.',
       date: 'October 25, 2025',
       expiry: '—',
       credId: '—',
-      url: '/img/certificates/5f9e17b9-1e39-4a98-97a3-9171e3384477.jpg',
+      url: '/img/certificates/5f9e17b9-1e39-4a98-97a3-9171e3384477.webp',
       viewLabel: 'View Certificate',
       skills: []
     },
     'bitcon-2025': {
-      img: '/img/certificates/042d7b7d-23f2-4e63-a5ea-4060b3fda89f.jpg',
+      img: '/img/certificates/042d7b7d-23f2-4e63-a5ea-4060b3fda89f.webp',
       title: 'Certificate of Participation — BITCON 2025',
       org: 'Batangas Information Technology Society',
       desc: 'For active participation in the Batangas Information Technology Conference (BITCON) 2025 with the theme "Building a Connected Tomorrow: IoT Innovations and Beyond", given April 26, 2025 at Lipa Academy for Sports, Culture and Arts Convention Center, Dagatan, Lipa City.',
       date: 'April 26, 2025',
       expiry: '—',
       credId: '—',
-      url: '/img/certificates/042d7b7d-23f2-4e63-a5ea-4060b3fda89f.jpg',
+      url: '/img/certificates/042d7b7d-23f2-4e63-a5ea-4060b3fda89f.webp',
       viewLabel: 'View Certificate',
       skills: []
     },
     'techno-sdg-2024': {
-      img: '/img/certificates/9740ccc7-3490-440c-a420-388ccfc47e59.jpg',
+      img: '/img/certificates/9740ccc7-3490-440c-a420-388ccfc47e59.webp',
       title: 'Certificate of Participation — Techno SDG Exposition',
       org: 'Junior Philippine Computer Society - Lipa Chapter & Tech Innovators Society, Batangas State University The NEU Lipa',
       desc: 'For active participation during the event "Techno SDG Exposition: Bridging Insights and Innovation", a collaborative initiative between JPCS and Tech Innovators Society held at 1st flr Gregorio Zara Building, BatStateU-TNEU Lipa Campus on February 28, 2024.',
       date: 'February 28, 2024',
       expiry: '—',
       credId: '—',
-      url: '/img/certificates/9740ccc7-3490-440c-a420-388ccfc47e59.jpg',
+      url: '/img/certificates/9740ccc7-3490-440c-a420-388ccfc47e59.webp',
       viewLabel: 'View Certificate',
       skills: []
     },
     'techsynergy-2023': {
-      img: '/img/certificates/c2228d3d-ac23-4705-b078-69c092e1be0f.jpg',
+      img: '/img/certificates/c2228d3d-ac23-4705-b078-69c092e1be0f.webp',
       title: 'Certificate of Participation — TechSynergy 2023',
       org: 'Junior Philippine Computer Society - Lipa Chapter, Batangas State University The NEU Lipa',
       desc: 'For active and invaluable participation during "TechSynergy: Navigating the Digital Landscape 2023 - Connecting Concepts, Bridging Technologies" held on December 4, 2023 at Batangas State University TheNEU - Lipa.',
       date: 'December 4, 2023',
       expiry: '—',
       credId: '—',
-      url: '/img/certificates/c2228d3d-ac23-4705-b078-69c092e1be0f.jpg',
+      url: '/img/certificates/c2228d3d-ac23-4705-b078-69c092e1be0f.webp',
       viewLabel: 'View Certificate',
       skills: []
     }
@@ -359,7 +431,7 @@
           ]
         }
       ],
-      images: ['moodstudios.png', 'moodstudios2.png', 'moodstudios3.png']
+      images: ['moodstudios.webp', 'moodstudios2.webp', 'moodstudios3.webp']
     },
     safebite: {
       title: 'SafeBite: Smart Monitoring Platform for Food Spoilage',
@@ -393,7 +465,7 @@
           ]
         }
       ],
-      images: ['safebite.png', 'safebite2.png', 'safebite3.png']
+      images: ['safebite.webp', 'safebite2.webp', 'safebite3.webp']
     },
     midwest: {
       title: 'Midwest Web and Mobile Application',
@@ -427,7 +499,7 @@
           ]
         }
       ],
-      images: ['midwest.png', 'midwest2.png', 'midwest3.png']
+      images: ['midwest.webp', 'midwest2.webp', 'midwest3.webp']
     },
     'unit-testing': {
       title: 'Unit Testing Generator with AI + Code Vulnerability Checker',
