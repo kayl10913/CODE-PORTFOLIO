@@ -1054,11 +1054,6 @@ body.hero-terminal-maximized::before {
   font-family: var(--mono);
 }
 
-.section-prefix {
-  color: var(--accent);
-  margin-right: 0.35rem;
-}
-
 .about-content p {
   margin: 0 0 0.75rem;
   color: var(--text-muted);
