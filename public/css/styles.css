@@ -1136,6 +1136,31 @@ body.hero-terminal-maximized::before {
   line-height: 1.5;
 }
 
+.exp-honor-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  width: 100%;
+  margin: 0.5rem 0 0 1.25rem;
+}
+
+.exp-honor {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.exp-honor i {
+  font-size: 0.75rem;
+}
+
 /* ----- Section head with View All ----- */
 .section-head {
   display: flex;
@@ -1281,9 +1306,31 @@ body.hero-terminal-maximized::before {
   padding: 1rem 1.25rem 0.75rem;
 }
 
-.project-card .project-view-btn {
+/* Scoped to the actions row on purpose: the thumbnail button also carries
+   .project-view-btn, and a looser selector puts these margins on the image. */
+.project-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
   margin: 0 1.25rem 1.25rem;
-  align-self: flex-start;
+}
+
+.project-repo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.project-repo-link:hover,
+.project-repo-link:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
 }
 
 .project-title {
@@ -1464,6 +1511,9 @@ body.hero-terminal-maximized::before {
   min-height: 280px;
   max-height: min(60vh, 520px);
   overflow: hidden;
+  /* Vertical scrolling and pinch-zoom stay with the browser; horizontal drags
+     are handled as swipes in script.js. */
+  touch-action: pan-y pinch-zoom;
 }
 
 .project-modal-img {
@@ -1471,6 +1521,17 @@ body.hero-terminal-maximized::before {
   width: 100%;
   max-height: min(60vh, 520px);
   object-fit: contain;
+  transition: transform 0.25s ease;
+}
+
+.project-gallery-frame.is-dragging .project-modal-img {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-modal-img {
+    transition: none;
+  }
 }
 
 .project-gallery-nav {
@@ -1529,11 +1590,57 @@ body.hero-terminal-maximized::before {
   color: var(--text-muted);
 }
 
+.project-gallery-hint {
+  display: none;
+  margin: 0.35rem 0 0;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  opacity: 0.75;
+}
+
+/* Only worth saying on touch devices, and only when there is more than one shot. */
+@media (hover: none) and (pointer: coarse) {
+  .project-gallery-hint:not(.is-hidden) {
+    display: block;
+  }
+}
+
 .project-modal-footer {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
   justify-content: flex-end;
   padding: 0.75rem 1.5rem 1.25rem;
   border-top: 1px solid var(--border);
+}
+
+/* margin-right rather than space-between, so Close stays right-aligned
+   on projects that have no repo to link. */
+.project-modal-repo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: auto;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.project-modal-repo:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.project-modal-repo.is-hidden {
+  display: none;
 }
 
 .project-modal-close-link {

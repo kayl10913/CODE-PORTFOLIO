@@ -118,12 +118,35 @@ would fade *inside* the reveal and smear it.
 
 ```bash
 npm run optimize:images   # re-encode public/img to WebP (run after adding images)
+npm run redact:certs      # blur signatures and rebuild the certificate WebP files
 npm run check:assets      # verify every referenced image resolves (needs the dev server running)
 ```
 
 `optimize:images` writes a `.webp` next to each PNG/JPEG and resizes to a sensible max width per
 folder. Update the `src` references afterwards. Originals are kept because Open Graph and Twitter
 card images are served as JPEG for crawler compatibility.
+
+## Certificate signatures
+
+The certificate scans carry handwritten signatures from the issuing officers, so nothing in
+`public/img/certificates/` is a straight copy of a scan. The pipeline is:
+
+```
+assets/certificates-raw/*.jpg   ->  npm run redact:certs  ->  public/img/certificates/*.webp
+```
+
+`assets/certificates-raw/` is gitignored and sits outside `public/`, so the unredacted scans are
+never committed or deployed — keep your own backup of that folder, since a fresh clone will not
+have it. Blur regions live in `scripts/redact-signatures.js` as fractions of width and height, so
+they stay correct if `OUTPUT_WIDTH` changes.
+
+Each region deliberately stops just above the printed signatory name to keep names and titles
+sharp. On the Techno SDG and TechSynergy certificates the handwriting crosses those names, so a
+short stroke tail survives there; that is the accepted trade, not a bug. Extending a region's `h`
+to swallow the tail will blur the name with it.
+
+To add a certificate: drop the scan in `assets/certificates-raw/`, add an entry to `CERTIFICATES`
+with rough regions, run the script, and nudge the fractions until the blur sits right.
 
 ## Deploying
 

@@ -30,6 +30,9 @@ async function postChat(body) {
   record('hero avatar uses webp', home.text.includes('Kyle%20Pic%201.webp'));
   record('canonical uses new domain', home.text.includes('kaylmatyu.is-pinoy.dev'));
 
+  const repoLinks = (home.text.match(/class="project-repo-link"/g) || []).length;
+  record('project cards link to repos', repoLinks === 3, repoLinks + ' of 3 cards');
+
   const guard = await get('/js/source-guard.js');
   record('source-guard.js deleted', guard.status === 404, 'got ' + guard.status);
 
@@ -43,10 +46,12 @@ async function postChat(body) {
 
   const script = await get('/js/script.js');
   record('theme reveal wired up', script.text.includes('startViewTransition'));
+  record('gallery swipe wired up', script.text.includes("addEventListener('touchstart'"));
 
   const css = await get('/css/styles.css');
   record('view transition styles present', css.text.includes('::view-transition-new(root)'));
   record('glass card token present', css.text.includes('--card-glass'));
+  record('gallery keeps vertical scroll', css.text.includes('touch-action: pan-y pinch-zoom'));
 
   const verify = await get('/google120b939770fcdda6.html');
   record('google verification file served', verify.status === 200);

@@ -1,3 +1,8 @@
 node_modules/
 .env
 .DS_Store
+
+# Unredacted certificate scans. Only the blurred WebP files in
+# public/img/certificates/ are ever committed or deployed.
+assets/certificates-raw/
+tmp-preview/

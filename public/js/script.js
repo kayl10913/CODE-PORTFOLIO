@@ -401,6 +401,7 @@
     'mood-studios': {
       title: 'Mood Studios Web and Mobile Application',
       tagline: 'Booking system for Mood Studios in Bacoor, Cavite',
+      repo: 'https://github.com/mood-studios/moodstudios-backend',
       description: 'A full-stack web and mobile application developed for a photography studio business to streamline booking, client management, and payment processing. The web application was built using React, while the mobile application was developed using Flutter to provide a seamless cross-platform experience. The backend was powered by Node.js, enabling efficient API handling and system integration. The system also integrates PayMongo for secure online payment transactions, allowing clients to conveniently pay for photography packages and reservations digitally.',
       stackCategories: [
         {
@@ -436,6 +437,7 @@
     safebite: {
       title: 'SafeBite: Smart Monitoring Platform for Food Spoilage',
       tagline: 'IoT-based food spoilage monitoring with AI-driven analysis',
+      repo: 'https://github.com/kayl10913/SafeBite_Server',
       description: 'SafeBite is an IoT-based food spoilage monitoring system designed to help users detect and prevent food waste through smart monitoring technology. The system utilizes multiple sensors to gather environmental and food condition data, which are analyzed using AI-driven techniques to determine spoilage levels and generate real-time alerts. The platform combines IoT hardware, data analytics, and artificial intelligence to improve food safety, monitoring accuracy, and early spoilage detection for households and businesses.',
       stackCategories: [
         {
@@ -470,6 +472,7 @@
     midwest: {
       title: 'Midwest Web and Mobile Application',
       tagline: 'Web admin dashboard with sales forecasting and analytics',
+      repo: 'https://github.com/aleshamarie/Midwest_Server',
       description: 'A modern web and mobile management platform developed for business operations, featuring an admin dashboard with advanced analytics and AI-powered sales forecasting. The system provides real-time monitoring of business performance, sales trends, and operational insights through interactive dashboards and data visualization tools. Artificial intelligence integration enhances decision-making by predicting future sales patterns and generating analytical reports to support strategic business planning.',
       stackCategories: [
         {
@@ -546,6 +549,9 @@
   var projectGalleryDots = document.getElementById('project-gallery-dots');
   var projectGalleryCurrent = document.getElementById('project-gallery-current');
   var projectGalleryTotal = document.getElementById('project-gallery-total');
+  var projectGalleryFrame = projectModal && projectModal.querySelector('.project-gallery-frame');
+  var projectGalleryHint = document.getElementById('project-gallery-hint');
+  var projectModalRepo = document.getElementById('project-modal-repo');
   var currentProjectImages = [];
   var currentProjectIndex = 0;
 
@@ -627,8 +633,22 @@
 
     renderProjectTechStack(projectModalTechStack, data.stackCategories);
 
+    if (projectModalRepo) {
+      projectModalRepo.classList.toggle('is-hidden', !data.repo);
+      if (data.repo) {
+        projectModalRepo.href = data.repo;
+      } else {
+        projectModalRepo.removeAttribute('href');
+      }
+    }
+
     if (projectModalGalleryWrap) {
       projectModalGalleryWrap.classList.toggle('is-hidden', !currentProjectImages.length);
+    }
+
+    resetGalleryDrag();
+    if (projectGalleryHint) {
+      projectGalleryHint.classList.toggle('is-hidden', currentProjectImages.length < 2);
     }
 
     if (projectGalleryDots) {
@@ -663,6 +683,7 @@
     projectModal.classList.remove('is-open');
     projectModal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    resetGalleryDrag();
     if (projectModalImg) projectModalImg.removeAttribute('src');
   }
 
@@ -688,6 +709,95 @@
     projectGalleryNext.addEventListener('click', function () {
       showProjectSlide(currentProjectIndex + 1);
     });
+  }
+
+  // ----- Gallery swipe (touch) -----
+  // The frame declares `touch-action: pan-y pinch-zoom`, so the browser keeps
+  // vertical scrolling and zoom while horizontal drags arrive here untouched.
+  // That lets every listener stay passive.
+  var SWIPE_COMMIT_PX = 45;
+  var SWIPE_LOCK_PX = 8;
+  var SWIPE_EDGE_RESISTANCE = 0.25;
+  var swipeStartX = 0;
+  var swipeStartY = 0;
+  var swipeOffset = 0;
+  var swipeActive = false;
+  var swipeIsHorizontal = null;
+
+  function setSwipeOffset(px) {
+    if (!projectModalImg) return;
+    projectModalImg.style.transform = px ? 'translateX(' + px + 'px)' : '';
+  }
+
+  function resetGalleryDrag() {
+    swipeActive = false;
+    swipeIsHorizontal = null;
+    swipeOffset = 0;
+    if (projectGalleryFrame) projectGalleryFrame.classList.remove('is-dragging');
+    setSwipeOffset(0);
+  }
+
+  // Dragging past the first or last shot only gives a little, mirroring the
+  // disabled prev/next buttons at the ends.
+  function dampenAtEdges(dx) {
+    var atStart = currentProjectIndex === 0 && dx > 0;
+    var atEnd = currentProjectIndex === currentProjectImages.length - 1 && dx < 0;
+    return atStart || atEnd ? dx * SWIPE_EDGE_RESISTANCE : dx;
+  }
+
+  if (projectGalleryFrame) {
+    projectGalleryFrame.addEventListener('touchstart', function (e) {
+      if (e.touches.length !== 1 || currentProjectImages.length < 2) return;
+      swipeActive = true;
+      swipeIsHorizontal = null;
+      swipeOffset = 0;
+      swipeStartX = e.touches[0].clientX;
+      swipeStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    projectGalleryFrame.addEventListener('touchmove', function (e) {
+      if (!swipeActive || e.touches.length !== 1) return;
+      var dx = e.touches[0].clientX - swipeStartX;
+      var dy = e.touches[0].clientY - swipeStartY;
+
+      if (swipeIsHorizontal === null) {
+        if (Math.abs(dx) < SWIPE_LOCK_PX && Math.abs(dy) < SWIPE_LOCK_PX) return;
+        swipeIsHorizontal = Math.abs(dx) > Math.abs(dy);
+        // A vertical drag belongs to the scrolling modal body, so bow out.
+        if (!swipeIsHorizontal) {
+          swipeActive = false;
+          return;
+        }
+        projectGalleryFrame.classList.add('is-dragging');
+      }
+
+      swipeOffset = dampenAtEdges(dx);
+      setSwipeOffset(swipeOffset);
+    }, { passive: true });
+
+    projectGalleryFrame.addEventListener('touchend', function () {
+      if (!swipeActive) return;
+      swipeActive = false;
+
+      var dx = swipeOffset;
+      swipeOffset = 0;
+
+      if (Math.abs(dx) > SWIPE_COMMIT_PX) {
+        // Drop the offset while transitions are still off so the incoming
+        // screenshot appears centred instead of sliding in from the drag.
+        setSwipeOffset(0);
+        showProjectSlide(currentProjectIndex + (dx < 0 ? 1 : -1));
+        requestAnimationFrame(function () {
+          if (projectGalleryFrame) projectGalleryFrame.classList.remove('is-dragging');
+        });
+        return;
+      }
+
+      if (projectGalleryFrame) projectGalleryFrame.classList.remove('is-dragging');
+      setSwipeOffset(0);
+    }, { passive: true });
+
+    projectGalleryFrame.addEventListener('touchcancel', resetGalleryDrag, { passive: true });
   }
 
   document.querySelectorAll('.project-view-btn').forEach(function (btn) {
@@ -840,6 +950,7 @@
     '  <span class="json-key">"name"</span>: <span class="json-str">"Kyle Matthew Calingasan"</span>,',
     '  <span class="json-key">"role"</span>: <span class="json-str">"Backend Developer"</span>,',
     '  <span class="json-key">"location"</span>: <span class="json-str">"Taguig, PH"</span>,',
+    '  <span class="json-key">"honors"</span>: <span class="json-str">"Cum Laude — BS IT, BatStateU TNEU Lipa"</span>,',
     '  <span class="json-key json-key-click" data-cmd="stack" role="button" tabindex="0" title="Run: stack">"tech_stack"</span>: {',
     '    <span class="json-key">"frontend"</span>: [<span class="json-str">"JavaScript"</span>, <span class="json-str">"React"</span>, <span class="json-str">"HTML/CSS"</span>],',
     '    <span class="json-key">"backend"</span>: [<span class="json-str">"Python"</span>, <span class="json-str">"PHP"</span>, <span class="json-str">"Java EE"</span>, <span class="json-str">"Node.js"</span>],',
@@ -1156,7 +1267,7 @@
     }
 
     if (name === 'about') {
-      runHeroResponse(cmd, 'Information Technology Specialist · Batangas State University graduate.\nBackend systems, RESTful APIs, AWS, IoT & AI.\nType: go about — to jump to the section');
+      runHeroResponse(cmd, 'Information Technology Specialist · Batangas State University graduate, Cum Laude.\nBackend systems, RESTful APIs, AWS, IoT & AI.\nType: go about — to jump to the section');
       return;
     }
 
