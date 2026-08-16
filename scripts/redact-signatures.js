@@ -115,6 +115,8 @@ async function redact(cert) {
     process.exit(1);
   }
 
+  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+
   let failed = 0;
   for (const cert of CERTIFICATES) {
     try {
