@@ -1999,17 +1999,29 @@ body.hero-terminal-maximized::before {
   position: relative;
   max-width: 100%;
   max-height: 100%;
+  /* Provide a larger fixed viewport inside the lightbox */
+  width: min(1100px, 94vw);
+  height: min(820px, 88vh);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .cert-lightbox-img {
-  max-width: 100%;
-  max-height: 90vh;
-  width: auto;
-  height: auto;
+  max-width: none;
+  max-height: none;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.cert-lightbox-iframe {
+  max-width: none;
+  max-height: none;
+  width: 100%;
+  height: 100%;
   border-radius: 8px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }

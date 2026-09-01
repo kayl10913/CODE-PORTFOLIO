@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <rect width="100%" height="100%" fill="#0a0e14" />
+  <rect x="60" y="60" width="1080" height="780" fill="#fff" rx="12" />
+  <text x="50%" y="45%" font-family="IBM Plex Sans, Arial, sans-serif" font-size="48" fill="#0a0e14" text-anchor="middle">TESDA</text>
+  <text x="50%" y="55%" font-family="IBM Plex Sans, Arial, sans-serif" font-size="28" fill="#0a0e14" text-anchor="middle">Training Certificate</text>
+</svg>

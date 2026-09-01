@@ -202,6 +202,19 @@
       url: 'https://www.credly.com/earner/earned/badge/26662f19-ed7a-49db-9bf6-99be9087e372',
       skills: ['DevOps', 'Red Hat OpenShift', 'Basic container networking', 'Containers', 'OpenShift', 'Podman', 'Podman Desktop', 'Red Hat Academy', 'Run multi-container applications', 'Troubleshoot Container Deployments']
     },
+    'tesda-nc2': {
+      img: '/certs/NCII Cert.pdf',
+      title: 'National Certificate II in Computer Systems Servicing (CSS NC II) 2026',
+      org: 'Technical Education and Skills Development Authority (TESDA)',
+      desc: 'National Certificate (NC II) in Computer Systems Servicing — Passed: August 2026',
+      date: 'August 2026',
+      expiry: '—',
+      credId: '—',
+      url: '/certs/NCII Cert.pdf',
+      viewLabel: 'View Certificate',
+      skills: []
+    },
+    
     'databiz-2025': {
       img: '/img/certificates/5f9e17b9-1e39-4a98-97a3-9171e3384477.webp',
       title: 'Certificate of Participation — DATABIZ 2025',
@@ -265,9 +278,25 @@
   var certLightboxBackdrop = certLightbox && certLightbox.querySelector('.cert-lightbox-backdrop');
 
   function openCertLightbox(imgSrc, imgAlt) {
-    if (!certLightbox || !certLightboxImg) return;
-    certLightboxImg.src = imgSrc;
-    certLightboxImg.alt = imgAlt || 'Certificate';
+    if (!certLightbox) return;
+    var iframe = document.getElementById('cert-lightbox-iframe');
+    // If PDF, show in iframe; otherwise show as image
+      if (iframe && imgSrc && typeof imgSrc === 'string' && imgSrc.toLowerCase().endsWith('.pdf')) {
+      if (certLightboxImg) certLightboxImg.style.display = 'none';
+      iframe.style.display = '';
+      // Append a PDF fragment to fit page width in the browser PDF viewer
+      try {
+        var pdfSrc = imgSrc + (imgSrc.indexOf('#') === -1 ? '#zoom=page-width' : '&zoom=page-width');
+      } catch (e) { var pdfSrc = imgSrc; }
+      iframe.src = pdfSrc;
+      iframe.title = imgAlt || 'Certificate (PDF)';
+    } else {
+      if (iframe) { iframe.style.display = 'none'; iframe.src = ''; }
+      if (!certLightboxImg) return;
+      certLightboxImg.style.display = '';
+      certLightboxImg.src = imgSrc;
+      certLightboxImg.alt = imgAlt || 'Certificate';
+    }
     certLightbox.classList.add('is-open');
     certLightbox.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -275,6 +304,9 @@
 
   function closeCertLightbox() {
     if (!certLightbox) return;
+    var iframe = document.getElementById('cert-lightbox-iframe');
+    if (iframe) { iframe.src = ''; iframe.style.display = 'none'; }
+    if (certLightboxImg) { certLightboxImg.src = ''; certLightboxImg.style.display = ''; }
     certLightbox.classList.remove('is-open');
     certLightbox.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
