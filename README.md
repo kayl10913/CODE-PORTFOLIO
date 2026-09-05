@@ -34,6 +34,7 @@ The site runs at http://localhost:3000.
 ```
 public/            Static site (this is what gets served)
   index.html       Single-page portfolio
+  llms.txt         Concise factual profile for AI and crawler clients
   css/styles.css   Terminal-themed styling, light + dark
   js/script.js     Hero terminal, modals, scroll spy, reveal animations
   js/chat.js       Chat panel UI
@@ -52,7 +53,12 @@ scripts/           Maintenance utilities
 
 The assistant answers only from the portfolio facts in `lib/gemini-chat.js`. If you update your
 experience, projects, or certifications in `public/index.html`, update that system prompt too —
-otherwise the model will fall back on guessing and can state things that aren't true.
+otherwise the model will fall back on guessing and can state things that aren't true. Keep the
+identity wording in `public/index.html` and this prompt aligned, especially for current status,
+past employers, credentials, and dates.
+
+The public `llms.txt` file is a second machine-readable summary for clients that support the
+emerging convention. Keep it aligned with the homepage, chatbot facts, GitHub, and LinkedIn.
 
 **Model fallback.** Requests try each model in order and move to the next on a retryable failure
 (404, 429, 503, quota, overload). Auth errors stop immediately rather than burning through the list.
